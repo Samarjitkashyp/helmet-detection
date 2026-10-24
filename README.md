@@ -20,6 +20,7 @@ AI-powered helmet compliance checking. Record or upload a short video, and the s
 - **App distribution** – upload the Android APK from the dashboard (Settings → Mobile app) with a live progress bar, then publish it; a "Download app" button appears in the dashboard and users install from the public `/app` page.
 - **Production-ready backend** – JWT auth, role-based access, login rate limiting, optional admin IP allow-list, systemd/nginx deployment kit.
 - **Quality hints** – warns when a video is too dark or the model is unsure.
+- **Live preview model** – the server hands the mobile app an ONNX build of the model (`/app/live-model`) so the app can draw helmet / no-helmet boxes on the camera preview while recording. A retrained model reaches phones without a new app release.
 
 ## How it works
 
@@ -117,6 +118,7 @@ uvicorn main:app --reload
 | DELETE | `/videos/{id}` | Delete video and results |
 | GET | `/health` | Liveness check |
 | GET | `/app`, `/app/download` | Public install page and APK download (admins upload from the dashboard) |
+| GET | `/app/live-model/info`, `/app/live-model` | Version and file of the on-device model (login required) |
 
 ## Configuration
 
@@ -138,7 +140,11 @@ Detection settings are editable at runtime in the dashboard: confidence threshol
 ```bash
 python training/merge_datasets.py            # unify datasets into classes: helmet / no_helmet
 python training/compare_models.py best.pt best_v2.pt   # compare two weights on held-out sets
+python training/export_onnx.py 416           # build backend/models/live.onnx for the app's live preview
+python training/eval_onnx.py                 # check the ONNX model against the PyTorch one
 ```
+
+`live.onnx` is generated (about 45 MB, git-ignored): run the export after every retraining and redeploy.
 
 Fine-tune with `training/train_colab.ipynb` (free Colab GPU). In production, flag wrong detections in the dashboard and use **Export → Retrain set** to collect corrected frames for the next training round.
 

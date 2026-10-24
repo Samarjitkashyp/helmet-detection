@@ -26,6 +26,7 @@ training/compare_subsets/
 training/_exp/
 *.zip
 backend/models/best_v1.pt
+backend/models/live.onnx
 backend/models/best_v2.pt
 
 # local-only files
