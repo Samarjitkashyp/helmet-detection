@@ -6,6 +6,7 @@ import config
 from admin.crud import PANEL_COOKIE, SESSION_MAX_AGE, mount_sqladmin
 from admin.panel import NotLoggedIn
 from admin.panel import router as panel_router
+from api.routes_app import router as app_router
 from api.routes_auth import router as auth_router
 from api.routes_video import router as video_router
 from db.database import Base, engine
@@ -51,5 +52,6 @@ def root():
 
 app.include_router(auth_router)
 app.include_router(video_router)
+app.include_router(app_router)
 app.include_router(panel_router)
 mount_sqladmin(app)

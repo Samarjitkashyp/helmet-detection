@@ -17,6 +17,7 @@ AI-powered helmet compliance checking. Record or upload a short video, and the s
 - **Evidence** – best frame per person (annotated and raw), confidence, and timestamp.
 - **Admin dashboard** – stats, violation review, false-positive marking, user and video management, runtime tuning, CSV export.
 - **Retraining loop** – export reviewed frames as a YOLO dataset and fine-tune on Colab.
+- **App distribution** – publish the Android APK from the dashboard (Settings → Mobile app); users install it from the public `/app` page.
 - **Production-ready backend** – JWT auth, role-based access, login rate limiting, optional admin IP allow-list, systemd/nginx deployment kit.
 - **Quality hints** – warns when a video is too dark or the model is unsure.
 
@@ -115,6 +116,7 @@ uvicorn main:app --reload
 | GET | `/videos/{id}/detections/{det_id}/image` | Evidence photo |
 | DELETE | `/videos/{id}` | Delete video and results |
 | GET | `/health` | Liveness check |
+| GET | `/app`, `/app/download` | Public install page and APK download (admins upload from the dashboard) |
 
 ## Configuration
 

@@ -38,3 +38,6 @@ deploy/nginx-cloudflare.conf
 Thumbs.db
 .idea/
 .vscode/
+
+# published Android app (uploaded from the admin panel)
+backend/storage/app/*

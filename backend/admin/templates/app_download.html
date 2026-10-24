@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Helmet Check - Android app{% endblock %}
+{% block bare %}
+<div class="container py-5" style="max-width:480px">
+  <div class="card shadow-sm"><div class="card-body p-4 text-center">
+    <div class="display-4 text-primary mb-2"><i class="bi bi-shield-check"></i></div>
+    <h3 class="mb-1">Helmet Check</h3>
+    <p class="text-secondary">Android app for AI helmet checks</p>
+    {% if app %}
+      <a class="btn btn-primary btn-lg w-100 mb-3" href="/app/download"><i class="bi bi-download"></i> Download for Android</a>
+      <div class="text-secondary small mb-4">
+        {% if app.version %}Version {{ app.version }} · {% endif %}{{ app.size_mb }} MB · updated {{ app.uploaded_at }}
+      </div>
+      <div class="text-start small">
+        <div class="fw-semibold mb-1">How to install</div>
+        <ol class="ps-3 mb-3">
+          <li>Open this page on your Android phone and tap <b>Download</b>.</li>
+          <li>Open the downloaded file. If asked, allow <b>"Install unknown apps"</b> for your browser.</li>
+          <li>Tap <b>Install</b>, then open <b>Helmet Check</b> and create an account.</li>
+        </ol>
+        <div class="text-secondary">Android 7.0 or newer. If your phone is old (32-bit), ask the admin for the matching build.</div>
+      </div>
+    {% else %}
+      <div class="alert alert-secondary mb-0">The app is not available yet. Please check back soon.</div>
+    {% endif %}
+  </div></div>
+</div>
+{% endblock %}

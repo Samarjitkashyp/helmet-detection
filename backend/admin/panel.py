@@ -1,9 +1,11 @@
 """Custom admin dashboard (Jinja2 + HTMX + Chart.js) served under /panel."""
 import csv
 import io
+import uuid
 import zipfile
 from datetime import datetime, timedelta
 from pathlib import Path
+from urllib.parse import quote
 
 import cv2
 import numpy as np
@@ -19,6 +21,7 @@ from core.security import verify_password
 from db.crud import load_settings
 from db.database import get_db
 from db.models import Detection, Setting, User, Video
+from services import app_release
 from services.video_processor import raw_path
 
 SESSION_KEY = "admin_id"
@@ -195,9 +198,50 @@ def videos(request: Request, status: str = "", page: int = 1, admin: User = Depe
 
 
 # ---------- settings ----------
+def _app_ctx(request: Request, app_status: str = "", app_error: str = "") -> dict:
+    """Template data for the 'Mobile app' card on the settings page."""
+    base = str(request.base_url).rstrip("/")
+    return {"app": app_release.info(), "app_page_url": f"{base}/app", "app_status": app_status,
+            "app_error": app_error, "max_apk_mb": app_release.MAX_APK_MB}
+
+
 @router.get("/settings", response_class=HTMLResponse)
-def settings_page(request: Request, saved: int = 0, admin: User = Depends(current_admin), db: Session = Depends(get_db)):
-    return render(request, "settings.html", admin, active="settings", values=load_settings(db), saved=bool(saved), error=None)
+def settings_page(request: Request, saved: int = 0, app: str = "", app_error: str = "",
+                  admin: User = Depends(current_admin), db: Session = Depends(get_db)):
+    return render(request, "settings.html", admin, active="settings", values=load_settings(db), saved=bool(saved),
+                  error=None, **_app_ctx(request, app, app_error))
+
+
+@router.post("/app-upload")
+async def app_upload(request: Request, admin: User = Depends(current_admin)):
+    """Publish a new Android APK for download at /app. Replaces the previous one."""
+    form = await request.form()
+    upload = form.get("apk")
+    if upload is None or not getattr(upload, "filename", ""):
+        return RedirectResponse("/panel/settings?app_error=" + quote("Choose an .apk file first."), status_code=303)
+    app_release.APP_DIR.mkdir(parents=True, exist_ok=True)
+    tmp = app_release.APP_DIR / f"upload-{uuid.uuid4().hex}.tmp"
+    limit = app_release.MAX_APK_MB * 1024 * 1024
+    size = 0
+    try:
+        with open(tmp, "wb") as out:
+            while chunk := await upload.read(1024 * 1024):
+                size += len(chunk)
+                if size > limit:
+                    raise app_release.InvalidApk(f"File is larger than {app_release.MAX_APK_MB} MB.")
+                out.write(chunk)
+        app_release.save(tmp, str(form.get("version", "")))
+    except app_release.InvalidApk as e:
+        return RedirectResponse("/panel/settings?app_error=" + quote(str(e)), status_code=303)
+    finally:
+        tmp.unlink(missing_ok=True)   # save() moves it away on success
+    return RedirectResponse("/panel/settings?app=published", status_code=303)
+
+
+@router.post("/app-remove")
+def app_remove(admin: User = Depends(current_admin)):
+    app_release.remove()
+    return RedirectResponse("/panel/settings?app=removed", status_code=303)
 
 
 # key -> (type, min, max, label used in error messages)
@@ -227,7 +271,7 @@ async def settings_save(request: Request, admin: User = Depends(current_admin), 
     if bad:
         shown = {**load_settings(db), **{k: form.get(k, "") for k in SETTING_RULES}}
         return render(request, "settings.html", admin, active="settings", saved=False, values=shown,
-                      error="Values out of range: " + "; ".join(bad) + ".")
+                      error="Values out of range: " + "; ".join(bad) + ".", **_app_ctx(request))
     for key, val in parsed.items():
         row = db.get(Setting, key)
         if row:
