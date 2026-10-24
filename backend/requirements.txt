@@ -1,0 +1,16 @@
+ultralytics
+opencv-python
+fastapi
+uvicorn[standard]
+sqlalchemy
+psycopg2-binary
+alembic
+python-multipart
+python-dotenv
+sqladmin
+jinja2
+bcrypt
+pyjwt
+itsdangerous
+email-validator
+greenlet

@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block content %}
+<h3 class="mb-4">Dashboard</h3>
+<div class="row g-3 mb-4">
+  {% for title, value, icon, color in [
+    ('Users', stats.users, 'people', 'primary'),
+    ('Videos', stats.videos, 'camera-video', 'info'),
+    ('Violations', stats.violations, 'exclamation-triangle', 'danger'),
+    ('No-helmet share', stats.pct ~ '%', 'percent', 'warning'),
+    ('Failed videos', stats.failed, 'x-octagon', 'secondary')] %}
+  <div class="col-6 col-lg">
+    <div class="card stat-card shadow-sm h-100"><div class="card-body">
+      <div class="text-secondary small"><i class="bi bi-{{ icon }} text-{{ color }}"></i> {{ title }}</div>
+      <div class="display-6">{{ value }}</div>
+    </div></div>
+  </div>
+  {% endfor %}
+</div>
+<div class="row g-3">
+  <div class="col-lg-8">
+    <div class="card shadow-sm"><div class="card-body">
+      <h6>Violations per day (last 14 days, false positives excluded)</h6>
+      <canvas id="chart" height="110"></canvas>
+    </div></div>
+  </div>
+  <div class="col-lg-4">
+    <div class="card shadow-sm"><div class="card-body">
+      <h6>Recent videos</h6>
+      <ul class="list-group list-group-flush">
+        {% for v in recent %}
+        <li class="list-group-item d-flex justify-content-between px-0">
+          <span class="text-truncate me-2">{{ v.filename }}<br><small class="text-secondary">{{ v.user.name if v.user else '-' }}</small></span>
+          <span class="badge align-self-center text-bg-{{ {'done':'success','failed':'danger'}.get(v.status,'warning') }}">{{ v.status }}</span>
+        </li>
+        {% else %}<li class="list-group-item px-0 text-secondary">No videos yet.</li>{% endfor %}
+      </ul>
+    </div></div>
+  </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<script>
+new Chart(document.getElementById('chart'), {
+  type: 'bar',
+  data: { labels: {{ chart.labels | tojson }}, datasets: [{ label: 'no_helmet', data: {{ chart.data | tojson }}, backgroundColor: '#dc3545' }] },
+  options: { plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { precision: 0 } } } }
+});
+</script>
+{% endblock %}

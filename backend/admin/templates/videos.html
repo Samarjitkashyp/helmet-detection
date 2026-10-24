@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block content %}
+<h3 class="mb-3">Videos <small class="text-secondary fs-6">({{ total }})</small></h3>
+<form class="mb-3" method="get">
+  <select name="status" class="form-select form-select-sm d-inline-block w-auto" onchange="this.form.submit()">
+    {% for v, t in [('','all statuses'),('processing','processing'),('done','done'),('failed','failed')] %}<option value="{{ v }}" {{ 'selected' if status == v }}>{{ t }}</option>{% endfor %}
+  </select>
+</form>
+<div class="card shadow-sm"><div class="table-responsive">
+<table class="table table-hover align-middle mb-0">
+  <thead><tr><th>ID</th><th>File</th><th>User</th><th>Status</th><th>Length</th><th>Violations</th><th>Uploaded</th></tr></thead>
+  <tbody>
+    {% for v in items %}
+    <tr>
+      <td>{{ v.id }}</td><td>{{ v.filename }}</td><td>{{ v.user.email if v.user else '-' }}</td>
+      <td><span class="badge text-bg-{{ {'done':'success','failed':'danger'}.get(v.status,'warning') }}">{{ v.status }}</span>
+        {% if v.error %}<br><small class="text-danger">{{ v.error[:80] }}</small>{% endif %}</td>
+      <td>{{ '%.0fs' % v.duration_seconds if v.duration_seconds else '-' }}</td>
+      <td>{{ det_counts.get(v.id, 0) }}</td>
+      <td>{{ v.uploaded_at.strftime('%Y-%m-%d %H:%M') if v.uploaded_at }}</td>
+    </tr>
+    {% else %}<tr><td colspan="7" class="text-center text-secondary py-4">No videos.</td></tr>{% endfor %}
+  </tbody>
+</table></div></div>
+{% set qs = '&status=' ~ status %}
+{% include "_pager.html" %}
+{% endblock %}

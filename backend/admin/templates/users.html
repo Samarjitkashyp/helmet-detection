@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block content %}
+<h3 class="mb-3">Users <small class="text-secondary fs-6">({{ items|length }})</small></h3>
+<div class="card shadow-sm"><div class="table-responsive">
+<table class="table table-hover align-middle mb-0">
+  <thead><tr><th>ID</th><th>Name</th><th>Email</th><th>Role</th><th>Videos</th><th>Status</th><th></th></tr></thead>
+  <tbody>{% for u in items %}{% include "_user_row.html" %}{% endfor %}</tbody>
+</table></div></div>
+{% endblock %}

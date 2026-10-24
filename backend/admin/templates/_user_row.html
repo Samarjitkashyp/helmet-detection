@@ -1,0 +1,19 @@
+<tr id="user-{{ u.id }}">
+  <td>{{ u.id }}</td>
+  <td>{{ u.name }}</td>
+  <td>{{ u.email }}</td>
+  <td><span class="badge text-bg-{{ 'primary' if u.role == 'admin' else 'secondary' }}">{{ u.role }}</span></td>
+  <td>{{ counts.get(u.id, 0) }}</td>
+  <td><span class="badge text-bg-{{ 'success' if u.is_active else 'danger' }}">{{ 'active' if u.is_active else 'blocked' }}</span></td>
+  <td class="text-end">
+    {% if u.id != admin.id %}
+    <button class="btn btn-sm btn-outline-secondary" hx-post="/panel/users/{{ u.id }}/toggle-role"
+            hx-target="#user-{{ u.id }}" hx-swap="outerHTML"
+            hx-confirm="Change role of {{ u.email }} to {{ 'user' if u.role == 'admin' else 'admin' }}?">
+      Make {{ 'user' if u.role == 'admin' else 'admin' }}</button>
+    <button class="btn btn-sm {{ 'btn-outline-danger' if u.is_active else 'btn-outline-success' }}"
+            hx-post="/panel/users/{{ u.id }}/toggle-active" hx-target="#user-{{ u.id }}" hx-swap="outerHTML">
+      {{ 'Block' if u.is_active else 'Unblock' }}</button>
+    {% else %}<span class="text-secondary small">you</span>{% endif %}
+  </td>
+</tr>

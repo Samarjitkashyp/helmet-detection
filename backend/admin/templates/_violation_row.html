@@ -1,0 +1,13 @@
+<tr id="det-{{ d.id }}" class="{{ 'fp' if d.is_false_positive }}">
+  <td>{% if d.screenshot_path %}<a href="/panel/media/{{ d.screenshot_path }}" target="_blank"><img class="thumb" src="/panel/media/{{ d.screenshot_path }}" alt=""></a>{% else %}<div class="thumb"></div>{% endif %}</td>
+  <td>#{{ d.id }}</td>
+  <td><span class="badge text-bg-{{ 'danger' if d.label == 'no_helmet' else 'success' }}">{{ d.label }}</span></td>
+  <td>{{ '%.0f' % (d.confidence * 100) }}%</td>
+  <td>{{ d.video.filename }}<br><small class="text-secondary">{{ d.video.user.email if d.video.user else '-' }} · {{ '%.1f' % d.timestamp_seconds }}s</small></td>
+  <td class="text-end">
+    <button class="btn btn-sm {{ 'btn-outline-secondary' if d.is_false_positive else 'btn-outline-danger' }}"
+            hx-post="/panel/violations/{{ d.id }}/toggle-fp" hx-target="#det-{{ d.id }}" hx-swap="outerHTML">
+      {{ 'Undo false positive' if d.is_false_positive else 'Mark false positive' }}
+    </button>
+  </td>
+</tr>
