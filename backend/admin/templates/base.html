@@ -34,7 +34,22 @@
     <div class="text-secondary small mt-3">{{ admin.email }}</div>
     <a class="btn btn-sm btn-outline-light mt-2" href="/panel/logout">Logout</a>
   </nav>
-  <main class="flex-grow-1 p-4">{% block content %}{% endblock %}</main>
+  <main class="flex-grow-1 p-4">
+    {% set pub = published_app() %}
+    <div class="d-flex justify-content-end mb-3">
+      {% if pub %}
+        <a class="btn btn-success btn-sm" href="/app/download" title="Download the published Android app">
+          <i class="bi bi-android2"></i> Download app
+          <span class="opacity-75 ms-1">{% if pub.version %}v{{ pub.version }} · {% endif %}{{ pub.size_mb }} MB</span>
+        </a>
+      {% else %}
+        <a class="btn btn-outline-secondary btn-sm" href="/panel/settings#mobile-app" title="No app published yet">
+          <i class="bi bi-upload"></i> Upload app
+        </a>
+      {% endif %}
+    </div>
+    {% block content %}{% endblock %}
+  </main>
 </div>
 {% else %}
 {% block bare %}{% endblock %}

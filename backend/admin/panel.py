@@ -10,7 +10,7 @@ from urllib.parse import quote
 import cv2
 import numpy as np
 from fastapi import APIRouter, Depends, Form, HTTPException, Request
-from fastapi.responses import FileResponse, HTMLResponse, RedirectResponse, StreamingResponse
+from fastapi.responses import FileResponse, HTMLResponse, JSONResponse, RedirectResponse, StreamingResponse
 from fastapi.templating import Jinja2Templates
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session, joinedload
@@ -28,6 +28,7 @@ SESSION_KEY = "admin_id"
 PAGE_SIZE = 25
 
 templates = Jinja2Templates(directory=str(Path(__file__).parent / "templates"))
+templates.env.globals["published_app"] = app_release.info   # lets every page show the "Download app" button
 router = APIRouter(prefix="/panel", include_in_schema=False)
 
 
@@ -201,8 +202,8 @@ def videos(request: Request, status: str = "", page: int = 1, admin: User = Depe
 def _app_ctx(request: Request, app_status: str = "", app_error: str = "") -> dict:
     """Template data for the 'Mobile app' card on the settings page."""
     base = str(request.base_url).rstrip("/")
-    return {"app": app_release.info(), "app_page_url": f"{base}/app", "app_status": app_status,
-            "app_error": app_error, "max_apk_mb": app_release.MAX_APK_MB}
+    return {"app": app_release.info(), "staged": app_release.staged_info(), "app_page_url": f"{base}/app",
+            "app_status": app_status, "app_error": app_error, "max_apk_mb": app_release.MAX_APK_MB}
 
 
 @router.get("/settings", response_class=HTMLResponse)
@@ -212,13 +213,13 @@ def settings_page(request: Request, saved: int = 0, app: str = "", app_error: st
                   error=None, **_app_ctx(request, app, app_error))
 
 
-@router.post("/app-upload")
-async def app_upload(request: Request, admin: User = Depends(current_admin)):
-    """Publish a new Android APK for download at /app. Replaces the previous one."""
+@router.post("/app-stage")
+async def app_stage(request: Request, admin: User = Depends(current_admin)):
+    """Step 1: receive the APK (the page shows a progress bar) and check it. Does not change the live download."""
     form = await request.form()
     upload = form.get("apk")
     if upload is None or not getattr(upload, "filename", ""):
-        return RedirectResponse("/panel/settings?app_error=" + quote("Choose an .apk file first."), status_code=303)
+        return JSONResponse({"error": "Choose an .apk file first."}, status_code=400)
     app_release.APP_DIR.mkdir(parents=True, exist_ok=True)
     tmp = app_release.APP_DIR / f"upload-{uuid.uuid4().hex}.tmp"
     limit = app_release.MAX_APK_MB * 1024 * 1024
@@ -230,12 +231,30 @@ async def app_upload(request: Request, admin: User = Depends(current_admin)):
                 if size > limit:
                     raise app_release.InvalidApk(f"File is larger than {app_release.MAX_APK_MB} MB.")
                 out.write(chunk)
-        app_release.save(tmp, str(form.get("version", "")))
+        staged = app_release.stage(tmp, upload.filename)
+    except app_release.InvalidApk as e:
+        return JSONResponse({"error": str(e)}, status_code=400)
+    finally:
+        tmp.unlink(missing_ok=True)   # stage() moves it away on success
+    return {"ok": True, "filename": staged["filename"], "size_mb": staged["size_mb"],
+            "sha256": staged["sha256"][:16], "uploaded_at": staged["uploaded_at"]}
+
+
+@router.post("/app-publish")
+async def app_publish(request: Request, admin: User = Depends(current_admin)):
+    """Step 2: make the uploaded APK the live download."""
+    form = await request.form()
+    try:
+        app_release.publish_staged(str(form.get("version", "")))
     except app_release.InvalidApk as e:
         return RedirectResponse("/panel/settings?app_error=" + quote(str(e)), status_code=303)
-    finally:
-        tmp.unlink(missing_ok=True)   # save() moves it away on success
     return RedirectResponse("/panel/settings?app=published", status_code=303)
+
+
+@router.post("/app-discard")
+def app_discard(admin: User = Depends(current_admin)):
+    app_release.discard_staged()
+    return RedirectResponse("/panel/settings?app=discarded", status_code=303)
 
 
 @router.post("/app-remove")

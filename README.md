@@ -17,7 +17,7 @@ AI-powered helmet compliance checking. Record or upload a short video, and the s
 - **Evidence** – best frame per person (annotated and raw), confidence, and timestamp.
 - **Admin dashboard** – stats, violation review, false-positive marking, user and video management, runtime tuning, CSV export.
 - **Retraining loop** – export reviewed frames as a YOLO dataset and fine-tune on Colab.
-- **App distribution** – publish the Android APK from the dashboard (Settings → Mobile app); users install it from the public `/app` page.
+- **App distribution** – upload the Android APK from the dashboard (Settings → Mobile app) with a live progress bar, then publish it; a "Download app" button appears in the dashboard and users install from the public `/app` page.
 - **Production-ready backend** – JWT auth, role-based access, login rate limiting, optional admin IP allow-list, systemd/nginx deployment kit.
 - **Quality hints** – warns when a video is too dark or the model is unsure.
 

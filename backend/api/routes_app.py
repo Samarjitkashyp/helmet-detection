@@ -9,6 +9,7 @@ from services import app_release
 
 router = APIRouter(tags=["app"], include_in_schema=False)
 templates = Jinja2Templates(directory=str(Path(__file__).resolve().parent.parent / "admin" / "templates"))
+templates.env.globals["published_app"] = app_release.info
 
 APK_MEDIA_TYPE = "application/vnd.android.package-archive"
 

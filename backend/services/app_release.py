@@ -73,3 +73,52 @@ def save(tmp_path: Path, version: str) -> dict:
 def remove() -> None:
     APK_PATH.unlink(missing_ok=True)
     META_PATH.unlink(missing_ok=True)
+
+
+# ---- two-step flow: upload (stage) first, publish after the admin has seen it arrive ----
+STAGED_PATH = APP_DIR / "staged.apk"
+STAGED_META = APP_DIR / "staged.json"
+
+
+def staged_info() -> dict | None:
+    """The uploaded-but-not-yet-published file, or None."""
+    if not STAGED_PATH.is_file() or not STAGED_META.is_file():
+        return None
+    try:
+        meta = json.loads(STAGED_META.read_text())
+    except (OSError, ValueError):
+        return None
+    meta["size_mb"] = round(STAGED_PATH.stat().st_size / 1024 / 1024, 1)
+    return meta
+
+
+def stage(tmp_path: Path, original_name: str) -> dict:
+    """Validate an uploaded file and keep it ready for publishing (does not change the live download)."""
+    validate_apk(tmp_path)
+    APP_DIR.mkdir(parents=True, exist_ok=True)
+    meta = {
+        "filename": Path(original_name).name[:120] or "app.apk",
+        "sha256": _sha256(tmp_path),
+        "uploaded_at": datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC"),
+    }
+    os.replace(tmp_path, STAGED_PATH)
+    STAGED_META.write_text(json.dumps(meta))
+    return staged_info() or meta
+
+
+def discard_staged() -> None:
+    STAGED_PATH.unlink(missing_ok=True)
+    STAGED_META.unlink(missing_ok=True)
+
+
+def publish_staged(version: str) -> dict:
+    """Make the staged file the live download (atomic replace of the previous one)."""
+    staged = staged_info()
+    if not staged:
+        raise InvalidApk("Upload an APK first, then publish it.")
+    version = "".join(c for c in version.strip() if c.isalnum() or c in ".-_+")[:30]
+    meta = {"version": version, "sha256": staged["sha256"], "uploaded_at": staged["uploaded_at"]}
+    os.replace(STAGED_PATH, APK_PATH)        # a download never sees a half-written file
+    META_PATH.write_text(json.dumps(meta))
+    STAGED_META.unlink(missing_ok=True)
+    return info() or meta
