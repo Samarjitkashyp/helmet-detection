@@ -8,6 +8,7 @@ from admin.panel import NotLoggedIn
 from admin.panel import router as panel_router
 from api.routes_app import router as app_router
 from api.routes_auth import router as auth_router
+from api.routes_video import purge_stale_uploads
 from api.routes_video import router as video_router
 from db.database import Base, engine
 from services.video_processor import fail_stale_jobs
@@ -16,6 +17,7 @@ config.UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
 config.RESULTS_DIR.mkdir(parents=True, exist_ok=True)
 Base.metadata.create_all(engine)  # replaced by Alembic migrations later
 fail_stale_jobs()
+purge_stale_uploads()
 
 docs = {} if config.DOCS_ENABLED else {"docs_url": None, "redoc_url": None, "openapi_url": None}
 app = FastAPI(title="Helmet Detection API", **docs)
