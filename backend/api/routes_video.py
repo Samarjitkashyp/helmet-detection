@@ -105,7 +105,7 @@ CHUNK_BYTES = 2 * 1024 * 1024          # size the app should use
 MAX_CHUNK_BYTES = 8 * 1024 * 1024      # hard cap per request
 MAX_OPEN_UPLOADS = 3                   # per user
 INCOMING_DIR = config.UPLOAD_DIR / "_incoming"
-STALE_SECONDS = 24 * 3600
+STALE_SECONDS = 30 * 60                # an upload with no new piece for this long is abandoned
 
 
 class UploadInit(BaseModel):
@@ -153,21 +153,35 @@ def init_upload(body: UploadInit, user: User = Depends(get_current_user)):
                             f"File too large (max {config.MAX_UPLOAD_MB} MB)")
     INCOMING_DIR.mkdir(parents=True, exist_ok=True)
     purge_stale_uploads()
-    open_uploads = 0
+    # Starting a new upload means the user gave up on their older unfinished ones (a flaky phone connection
+    # leaves them behind). Drop the oldest so the user is never blocked by their own leftovers.
+    mine: list[tuple[float, Path]] = []
     for d in INCOMING_DIR.iterdir():
         try:
             if json.loads((d / "meta.json").read_text())["user_id"] == user.id:
-                open_uploads += 1
+                mine.append((d.stat().st_mtime, d))
         except (OSError, ValueError, KeyError):
             continue
-    if open_uploads >= MAX_OPEN_UPLOADS:
-        raise HTTPException(status.HTTP_429_TOO_MANY_REQUESTS, "Too many unfinished uploads. Try again in a few minutes.")
+    mine.sort()
+    while len(mine) >= MAX_OPEN_UPLOADS:
+        shutil.rmtree(mine.pop(0)[1], ignore_errors=True)
     upload_id = uuid.uuid4().hex
     d = INCOMING_DIR / upload_id
     d.mkdir()
     (d / "data.part").touch()
     (d / "meta.json").write_text(json.dumps({"user_id": user.id, "filename": Path(body.filename).name, "size": body.size}))
     return {"upload_id": upload_id, "chunk_size": CHUNK_BYTES}
+
+
+@router.get("/uploads/{upload_id}")
+def upload_status(upload_id: str, user: User = Depends(get_current_user)):
+    """How many bytes the server holds, so an interrupted upload can continue instead of starting over."""
+    meta, part = _upload_meta(upload_id, user)
+    try:
+        committed = int((part.parent / "committed").read_text())   # only pieces that arrived completely
+    except (OSError, ValueError):
+        committed = 0
+    return {"received": committed, "size": meta["size"]}
 
 
 @router.put("/uploads/{upload_id}")
@@ -190,6 +204,7 @@ async def put_chunk(upload_id: str, request: Request, offset: int = Query(ge=0),
             f.write(piece)
     if written == 0:
         raise HTTPException(status.HTTP_400_BAD_REQUEST, "Empty piece")
+    (part.parent / "committed").write_text(str(offset + written))
     os.utime(part.parent)  # keeps an active upload from being purged as stale
     return {"received": offset + written}
 
