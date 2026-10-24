@@ -169,6 +169,10 @@ Trained on public Roboflow Universe datasets. Thanks to their authors:
 
 Built with [Ultralytics YOLOv8](https://github.com/ultralytics/ultralytics) (AGPL-3.0). Check its license terms before commercial use.
 
+## License
+
+The code in this repository is released under the [MIT License](LICENSE). Third-party components keep their own licenses: Ultralytics YOLOv8 is AGPL-3.0 and the training datasets are listed above. The trained weights are derived from both, so review those terms before commercial use.
+
 ## Author
 
-[Samarjit Kashyap](https://github.com/Samarjitkashyp)
+[Samarjitkashyp](https://github.com/Samarjitkashyp)
