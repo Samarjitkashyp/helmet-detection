@@ -154,6 +154,7 @@ JWT auth with role checks, bcrypt password hashing, login rate limiting, secure 
 
 - Accuracy drops in darkness, at long range, and with heavily occluded heads.
 - Turbans (pagdi) are not yet covered by the training data.
+- Counts are **sightings**, not unique people: tracking follows a person while they stay in view, but the same person who leaves and re-enters (for example after a camera cut in an edited clip) is counted again. Tracker tuning (ByteTrack vs BoT-SORT, frame skip, buffer) did not change this; unifying identities across shots would need a person re-identification model.
 - Processing is CPU-bound: about one minute of video per several minutes of compute on a small server.
 - Schema changes need migrations (Alembic is not set up yet).
 

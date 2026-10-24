@@ -23,6 +23,7 @@ runs/
 test_videos/
 training/eval_subset/
 training/compare_subsets/
+training/_exp/
 *.zip
 backend/models/best_v1.pt
 backend/models/best_v2.pt
