@@ -8,6 +8,8 @@ AI-powered helmet compliance checking. Record or upload a short video, and the s
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?logo=postgresql&logoColor=white)
 ![Flutter](https://img.shields.io/badge/Flutter-Android-02569B?logo=flutter&logoColor=white)
 
+> **Mobile app:** [helmet-detection-mobile-app](https://github.com/Samarjitkashyp/helmet-detection-mobile-app) (Flutter, Android). This repository is the backend it talks to.
+
 ## Features
 
 - **Video analysis** – YOLOv8 detection with ByteTrack tracking, so each person gets one verdict, not one per frame.
@@ -60,7 +62,7 @@ Inference runs on CPU at roughly 0.5 s per analysed frame (desktop i3). No GPU i
 | Database | PostgreSQL (SQLite works for trials) |
 | Admin | Jinja2 + HTMX + Chart.js, SQLAdmin |
 | Auth | JWT, bcrypt, role-based access |
-| Mobile | Flutter (Android) |
+| Mobile | Flutter (Android), see [helmet-detection-mobile-app](https://github.com/Samarjitkashyp/helmet-detection-mobile-app) |
 | Deploy | systemd, nginx, certbot, Cloudflare-friendly |
 
 ## Repository structure
