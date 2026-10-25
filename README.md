@@ -20,7 +20,7 @@ AI-powered helmet compliance checking. Record or upload a short video, and the s
 - **App distribution** – upload the Android APK from the dashboard (Settings → Mobile app) with a live progress bar, then publish it; a "Download app" button appears in the dashboard and users install from the public `/app` page.
 - **Production-ready backend** – JWT auth, role-based access, login rate limiting, optional admin IP allow-list, systemd/nginx deployment kit.
 - **Quality hints** – warns when a video is too dark or the model is unsure.
-- **Live preview model** – the server hands the mobile app an ONNX build of the model (`/app/live-model`) so the app can draw helmet / no-helmet boxes on the camera preview while recording. A retrained model reaches phones without a new app release.
+- **Live preview model** – the server hands the mobile app an ONNX build of the model (`/app/live-model`) so the app can draw helmet / no-helmet boxes on the camera preview while framing a shot. A retrained model reaches phones without a new app release.
 
 ## How it works
 
