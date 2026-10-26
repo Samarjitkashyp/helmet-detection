@@ -3,12 +3,13 @@
 Mirrors aiaxom.co.in: Plus Jakarta Sans, dark navy (#0b1220), emerald and amber, the same navigation and footer wording.
 """
 import json
+import re
 from html import escape
 
 BASE = "https://aiaxom.co.in"
 PUBLISHED = "2026-10-26"
 MODIFIED = "2026-10-26"
-ASSET_V = "20261026"
+ASSET_V = "20261026b"
 SITE = "Axom AI"
 ORG_ID = f"{BASE}/#organization"       # the Organization the main site already declares
 AUTHOR = {"@type": "Person", "name": "Samarjit Kashyap", "url": "https://github.com/Samarjitkashyp",
@@ -19,9 +20,18 @@ APP_PAGE = "https://helmet-detection.aiaxom.co.in/app"
 WHO_URL = "https://www.who.int/news/item/05-04-2023-new-who-guide-aims-to-boost-the-use-of-life-saving-helmets-for-motorcycle-riders"
 OG_IMAGE = f"{BASE}/research/assets/og-helmet-detection.jpg"
 
-NAV = [("AI Tools", "/tools"), ("Axom AI Chat", "https://chat.aiaxom.co.in/"), ("Research", "/research/"),
-       ("Use Cases", "/use-cases"), ("Pricing", "/pricing"), ("Blog", "/blog"), ("FAQ", "/faq"),
-       ("About", "/about"), ("Contact", "/contact")]
+NAV = [("AI Tools", "/tools"), ("Use Cases", "/use-cases"), ("Pricing", "/pricing"), ("Blog &amp; Insights", "/blog"),
+       ("Research", "/research/"), ("FAQ", "/faq"), ("About Us", "/about"), ("Contact Us", "/contact")]
+ICONS = {
+    "target": '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg>',
+    "users": '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.9M16 3.1a4 4 0 0 1 0 7.8"/></svg>',
+    "shield": '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>',
+    "bolt": '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2 3 14h9l-1 8 10-12h-9z"/></svg>',
+}
+
+
+def stat(icon, value, text):
+    return f'<div class="stat" role="listitem"><div class="ico">{ICONS[icon]}</div><b>{value}</b><span>{text}</span></div>'
 
 
 def e(s):
@@ -113,10 +123,11 @@ def header(current):
         links.append(f'<a href="{href}"{cur}>{name}</a>')
     return f'''<body>
 <a class="skip" href="#main">Skip to content</a>
+<div class="progress" aria-hidden="true"></div>
 <header class="site-header"><div class="wrap bar">
 <a class="brand" href="/"><img src="/axom-browser-logo.png" width="40" height="40" alt="Axom AI logo"><span><b>Axom AI</b><small>SMART &bull; ASSAMESE &bull; AI FOR ALL</small></span></a>
 <button class="menu-btn" type="button" aria-expanded="false" aria-controls="site-nav" aria-label="Open menu">&#9776;</button>
-<nav class="nav" id="site-nav" aria-label="Main">{"".join(links)}</nav>
+<nav class="nav" id="site-nav" aria-label="Main">{"".join(links)}<a class="cta-pill" href="https://chat.aiaxom.co.in/">Try Axom AI &rarr;</a></nav>
 </div></header>'''
 
 
@@ -143,8 +154,34 @@ FOOTER = '''<footer class="site-footer"><div class="wrap">
 </body></html>'''
 
 
+def _slug(text):
+    return re.sub(r"[^a-z0-9]+", "-", re.sub(r"<[^>]+>", "", text).lower()).strip("-")[:48]
+
+
 def page(p, body):
-    """p: dict(path, title, description, crumbs, ...)  body: html placed inside <main>"""
+    """p: dict(path, title, description, crumbs, ...)  body: html placed inside <main>
+
+    Gives every H2 an id, builds the contents list when a page has none, puts it in a sticky side column on wide screens
+    and turns the article column into the shared `prose` layout."""
+    heads = []
+
+    def add_id(m):
+        title = m.group(1)
+        sid = _slug(title)
+        heads.append((sid, re.sub(r"<[^>]+>", "", title)))
+        return f'<h2 id="{sid}">{title}</h2>'
+
+    body = re.sub(r'(?<!<div class="answer">)<h2>(.*?)</h2>', add_id, body)
+    body = body.replace('<span class="eyebrow">', '<span class="badge">')
+    toc = re.search(r'<nav class="toc".*?</nav>', body, re.S)
+    if not toc and len(heads) >= 4 and '<div class="read"' in body:
+        items = "".join(f'<li><a href="#{i}">{e(re.sub(r"^\d+\.\s*", "", t))}</a></li>' for i, t in heads)
+        toc_html = f'<nav class="toc" aria-label="On this page"><b>On this page</b><ol>{items}</ol></nav>'
+        body = body.replace('<div class="read" style="margin:0">', '<div class="read" style="margin:0">' + toc_html, 1)
+        toc = re.search(r'<nav class="toc".*?</nav>', body, re.S)
+    side = f'<aside class="side" aria-label="Contents">{toc.group(0)}</aside>' if toc else ""
+    body = body.replace('<div class="wrap"><div class="read" style="margin:0">',
+                        f'<div class="wrap layout{" has-side" if toc else ""}">{side}<div class="prose">', 1)
     return "\n".join([head(p), header("research"), crumbs_html(p["crumbs"]), f'<main id="main">{body}</main>', FOOTER])
 
 
@@ -154,6 +191,6 @@ def related(links):
 
 
 def meta_line(updated=MODIFIED, extra=""):
-    return (f'<p class="meta"><span>By <strong><a href="https://github.com/Samarjitkashyp">Samarjit Kashyap</a></strong>, Axom AI</span>'
+    return (f'<p class="meta"><span class="who"><span class="avatar" aria-hidden="true">S</span><span>By <strong><a href="https://github.com/Samarjitkashyp">Samarjit Kashyap</a></strong>, Axom AI</span></span>'
             f'<span>Published <strong><time datetime="{PUBLISHED}">26 Oct 2026</time></strong></span>'
             f'<span>Updated <strong><time datetime="{updated}">26 Oct 2026</time></strong></span>{extra}</p>')

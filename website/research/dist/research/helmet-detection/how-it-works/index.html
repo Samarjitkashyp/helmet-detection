@@ -44,42 +44,57 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/research/assets/research.css?v=20261026">
+<link rel="stylesheet" href="/research/assets/research.css?v=20261026b">
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://aiaxom.co.in/"},{"@type":"ListItem","position":2,"name":"Research","item":"https://aiaxom.co.in/research/"},{"@type":"ListItem","position":3,"name":"Helmet detection","item":"https://aiaxom.co.in/research/helmet-detection/"},{"@type":"ListItem","position":4,"name":"How it works","item":"https://aiaxom.co.in/research/helmet-detection/how-it-works/"}]}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","@id":"https://aiaxom.co.in/research/helmet-detection/how-it-works/#article","headline":"How AI helmet detection works, from A to Z","description":"A to Z of Axom AI's helmet detection: YOLOv8 detection, head crops, a crop classifier, per-rider tracking, alerts, training data and infrastructure.","image":["https://aiaxom.co.in/research/assets/og-helmet-detection.jpg"],"inLanguage":"en-IN","datePublished":"2026-10-26","dateModified":"2026-10-26","author":{"@type":"Person","name":"Samarjit Kashyap","url":"https://github.com/Samarjitkashyp","jobTitle":"Founder, Axom AI","worksFor":{"@id":"https://aiaxom.co.in/#organization"}},"publisher":{"@id":"https://aiaxom.co.in/#organization"},"mainEntityOfPage":"https://aiaxom.co.in/research/helmet-detection/how-it-works/","url":"https://aiaxom.co.in/research/helmet-detection/how-it-works/","isAccessibleForFree":true,"keywords":"how helmet detection works, helmet detection YOLOv8, helmet detection using deep learning, object tracking, YOLOv8 helmet detection tutorial, CCTV AI pipeline, Axom AI","about":[{"@type":"Thing","name":"Helmet detection"},{"@type":"Thing","name":"YOLO"},{"@type":"Thing","name":"Object tracking"},{"@type":"Thing","name":"Computer vision"}],"speakable":{"@type":"SpeakableSpecification","cssSelector":[".answer","h1"]},"citation":[{"@type":"CreativeWork","name":"Ultralytics YOLOv8","url":"https://github.com/ultralytics/ultralytics"},{"@type":"CreativeWork","name":"ByteTrack: multi-object tracking by associating every detection box","url":"https://arxiv.org/abs/2110.06864"},{"@type":"CreativeWork","name":"COCO dataset","url":"https://cocodataset.org/"}]}</script>
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
+<div class="progress" aria-hidden="true"></div>
 <header class="site-header"><div class="wrap bar">
 <a class="brand" href="/"><img src="/axom-browser-logo.png" width="40" height="40" alt="Axom AI logo"><span><b>Axom AI</b><small>SMART &bull; ASSAMESE &bull; AI FOR ALL</small></span></a>
 <button class="menu-btn" type="button" aria-expanded="false" aria-controls="site-nav" aria-label="Open menu">&#9776;</button>
-<nav class="nav" id="site-nav" aria-label="Main"><a href="/tools">AI Tools</a><a href="https://chat.aiaxom.co.in/">Axom AI Chat</a><a href="/research/" aria-current="page">Research</a><a href="/use-cases">Use Cases</a><a href="/pricing">Pricing</a><a href="/blog">Blog</a><a href="/faq">FAQ</a><a href="/about">About</a><a href="/contact">Contact</a></nav>
+<nav class="nav" id="site-nav" aria-label="Main"><a href="/tools">AI Tools</a><a href="/use-cases">Use Cases</a><a href="/pricing">Pricing</a><a href="/blog">Blog &amp; Insights</a><a href="/research/" aria-current="page">Research</a><a href="/faq">FAQ</a><a href="/about">About Us</a><a href="/contact">Contact Us</a><a class="cta-pill" href="https://chat.aiaxom.co.in/">Try Axom AI &rarr;</a></nav>
 </div></header>
 <nav class="crumbs wrap" aria-label="Breadcrumb"><ol><li><a href="/">Home</a></li><li><a href="/research/">Research</a></li><li><a href="/research/helmet-detection/">Helmet detection</a></li><li>How it works</li></ol></nav>
 <main id="main">
 <article>
 <header class="hero wrap">
-<span class="eyebrow">Technical deep dive</span>
+<span class="badge">Technical deep dive</span>
 <h1>How helmet detection works, <span class="grad">from A to Z</span></h1>
 <p class="lead">Every stage of Axom AI's system, the tools behind it, and the reasons we chose them, including the choices that did not work.</p>
-<p class="meta"><span>By <strong><a href="https://github.com/Samarjitkashyp">Samarjit Kashyap</a></strong>, Axom AI</span><span>Published <strong><time datetime="2026-10-26">26 Oct 2026</time></strong></span><span>Updated <strong><time datetime="2026-10-26">26 Oct 2026</time></strong></span></p>
+<p class="meta"><span class="who"><span class="avatar" aria-hidden="true">S</span><span>By <strong><a href="https://github.com/Samarjitkashyp">Samarjit Kashyap</a></strong>, Axom AI</span></span><span>Published <strong><time datetime="2026-10-26">26 Oct 2026</time></strong></span><span>Updated <strong><time datetime="2026-10-26">26 Oct 2026</time></strong></span></p>
 </header>
-<div class="wrap"><div class="read" style="margin:0">
+<div class="wrap layout has-side"><aside class="side" aria-label="Contents"><nav class="toc" aria-label="On this page"><b>On this page</b><ol>
+<li><a href="#input">Input</a></li><li><a href="#motor">Find motorcycles</a></li><li><a href="#heads">Find heads</a></li><li><a href="#verdict">Helmet or no helmet</a></li>
+<li><a href="#riders">Keep only riders</a></li><li><a href="#track">Track every rider</a></li><li><a href="#confirm">Confirm and alert</a></li><li><a href="#video">Video mode</a></li>
+<li><a href="#training">Training</a></li><li><a href="#infra">Servers and apps</a></li><li><a href="#stack">Technology table</a></li></ol></nav></aside><div class="prose">
 <div class="answer"><h2>Quick answer</h2>
 <p>The system finds motorcycles with a general YOLOv8s model, finds heads with a helmet-trained YOLOv8s (on the whole frame and on enlarged crops), double-checks each head with a small classifier, keeps only heads that sit on a motorcycle, tracks every rider separately and raises one alert per rider without a helmet. It runs on a CPU.</p></div>
 
-<figure><svg viewBox="0 0 920 250" role="img" aria-labelledby="flowT flowD" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto">
-<title id="flowT">Helmet detection pipeline</title><desc id="flowD">A camera or phone sends frames to a worker that finds motorcycles, heads and helmet verdicts, tracks each rider, and sends alerts to the server, which notifies Telegram, the dashboard and the app.</desc>
-<defs><marker id="ar" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#34d399"/></marker></defs>
-<g font-family="Plus Jakarta Sans, system-ui, sans-serif" font-size="15" fill="#e5e7eb" text-anchor="middle">
-<rect x="10" y="85" width="140" height="70" rx="14" fill="#10b9811f" stroke="#34d399"/><text x="80" y="115" font-weight="700">Camera</text><text x="80" y="136" fill="#a3b2c7" font-size="13">or phone video</text>
-<rect x="200" y="30" width="250" height="190" rx="14" fill="#ffffff0d" stroke="#ffffff30"/><text x="325" y="56" font-weight="700" fill="#34d399">Worker (PC or server)</text>
-<text x="325" y="88">1. find motorcycles</text><text x="325" y="114">2. find heads (frame + crops)</text><text x="325" y="140">3. helmet / no helmet</text><text x="325" y="166">4. track every rider</text><text x="325" y="192">5. confirm once</text>
-<rect x="500" y="85" width="150" height="70" rx="14" fill="#10b9811f" stroke="#34d399"/><text x="575" y="115" font-weight="700">Server</text><text x="575" y="136" fill="#a3b2c7" font-size="13">API + database</text>
-<rect x="710" y="10" width="200" height="56" rx="14" fill="#ffffff0d" stroke="#ffffff30"/><text x="810" y="44">Telegram message</text>
-<rect x="710" y="97" width="200" height="56" rx="14" fill="#ffffff0d" stroke="#ffffff30"/><text x="810" y="131">Admin dashboard</text>
-<rect x="710" y="184" width="200" height="56" rx="14" fill="#ffffff0d" stroke="#ffffff30"/><text x="810" y="218">Android app Alerts</text>
-</g><g stroke="#34d399" stroke-width="2.4" fill="none" marker-end="url(#ar)"><path d="M150 120 H196"/><path d="M450 120 H496"/><path d="M650 120 C680 120 680 38 706 38"/><path d="M650 125 H706"/><path d="M650 130 C680 130 680 212 706 212"/></g></svg><figcaption>The live CCTV pipeline. Phone videos follow the same detection steps on the server, with tracking over every frame.</figcaption></figure>
+<figure><div class="diagram"><svg viewBox="0 0 940 270" role="img" aria-labelledby="flowT flowD" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto">
+<title id="flowT">Helmet detection pipeline</title>
+<desc id="flowD">A camera or phone sends frames to a worker that finds motorcycles, heads and helmet verdicts, tracks each rider and confirms once. The worker sends the alert to the server, which notifies Telegram, the admin dashboard and the Android app.</desc>
+<defs><marker id="ah" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 z" class="arrow-head"/></marker></defs>
+<g font-size="15" text-anchor="middle">
+<rect class="box-em" x="10" y="95" width="140" height="80" rx="16" stroke-width="1.5"/>
+<text x="80" y="128" font-weight="800">Camera</text><text class="sub" x="80" y="150" font-size="13">or phone video</text>
+
+<rect class="box" x="205" y="22" width="270" height="226" rx="18" stroke-width="1.5"/>
+<text class="accent" x="340" y="52">Worker (PC or server)</text>
+<text x="340" y="86">1 &#183; find motorcycles</text><text x="340" y="115">2 &#183; find heads (frame + crops)</text>
+<text x="340" y="144">3 &#183; helmet or no helmet</text><text x="340" y="173">4 &#183; track every rider</text><text x="340" y="202">5 &#183; confirm, alert once</text>
+<text class="sub" x="340" y="232" font-size="12.5">YOLOv8 &#183; classifier &#183; tracker</text>
+
+<rect class="box-em" x="530" y="95" width="150" height="80" rx="16" stroke-width="1.5"/>
+<text x="605" y="128" font-weight="800">Server</text><text class="sub" x="605" y="150" font-size="13">API + database</text>
+
+<rect class="box" x="735" y="12" width="195" height="62" rx="14" stroke-width="1.5"/><text x="832" y="49">Telegram message</text>
+<rect class="box" x="735" y="104" width="195" height="62" rx="14" stroke-width="1.5"/><text x="832" y="141">Admin dashboard</text>
+<rect class="box" x="735" y="196" width="195" height="62" rx="14" stroke-width="1.5"/><text x="832" y="233">Android app Alerts</text>
+</g>
+<g class="link" stroke-width="2.4" fill="none" marker-end="url(#ah)"><path d="M150 135 H201"/><path d="M475 135 H526"/><path d="M680 128 C708 128 708 43 731 43"/><path d="M680 135 H731"/><path d="M680 142 C708 142 708 227 731 227"/></g>
+</svg></div><figcaption>The live CCTV pipeline. Phone videos follow the same detection steps on the server, with tracking over every frame.</figcaption></figure>
 
 <nav class="toc" aria-label="On this page"><b>On this page</b><ol>
 <li><a href="#input">Input</a></li><li><a href="#motor">Find motorcycles</a></li><li><a href="#heads">Find heads</a></li><li><a href="#verdict">Helmet or no helmet</a></li>
@@ -148,7 +163,7 @@
 <tr><td>Hosting</td><td>nginx, Cloudflare, AWS Lightsail</td><td>Low cost, HTTPS, protection from direct internet traffic.</td></tr>
 </tbody></table></div>
 
-<h2>Keep reading</h2>
+<h2 id="keep-reading">Keep reading</h2>
 <div class="related"><a class="card" href="/research/helmet-detection/results/"><span class="tag">Numbers</span><h3>Results and benchmarks</h3><p>Every measurement and what went wrong.</p></a><a class="card" href="/research/helmet-detection/cctv-monitoring/"><span class="tag">Live</span><h3>CCTV monitoring</h3><p>Connect a camera and run the worker.</p></a><a class="card" href="/research/helmet-detection/"><span class="tag">Start</span><h3>Helmet detection overview</h3><p>The short version.</p></a></div>
 </div></div>
 </article></main>
@@ -163,5 +178,5 @@
 </div>
 <div class="foot-bottom"><span>&copy; 2026 Axom AI. All rights reserved.</span><span><a href="/privacy">Privacy Policy</a> &middot; <a href="/terms">Terms of Service</a> &middot; <a href="/cookie-policy">Cookie Policy</a></span><span>Made with &hearts; in Assam, India</span></div>
 </div></footer>
-<script src="/research/assets/research.js?v=20261026" defer></script>
+<script src="/research/assets/research.js?v=20261026b" defer></script>
 </body></html>

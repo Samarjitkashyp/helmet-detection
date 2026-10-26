@@ -44,49 +44,50 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/research/assets/research.css?v=20261026">
+<link rel="stylesheet" href="/research/assets/research.css?v=20261026b">
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://aiaxom.co.in/"},{"@type":"ListItem","position":2,"name":"Research","item":"https://aiaxom.co.in/research/"},{"@type":"ListItem","position":3,"name":"Helmet detection","item":"https://aiaxom.co.in/research/helmet-detection/"},{"@type":"ListItem","position":4,"name":"Results","item":"https://aiaxom.co.in/research/helmet-detection/results/"}]}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","@id":"https://aiaxom.co.in/research/helmet-detection/results/#article","headline":"Helmet detection results and benchmarks","description":"Measured accuracy of Axom AI helmet detection: precision, recall and mAP on held-out CCTV frames, live results at 1 and 2 fps, CPU speed, night tests and mistakes.","image":["https://aiaxom.co.in/research/assets/og-helmet-detection.jpg"],"inLanguage":"en-IN","datePublished":"2026-10-26","dateModified":"2026-10-26","author":{"@type":"Person","name":"Samarjit Kashyap","url":"https://github.com/Samarjitkashyp","jobTitle":"Founder, Axom AI","worksFor":{"@id":"https://aiaxom.co.in/#organization"}},"publisher":{"@id":"https://aiaxom.co.in/#organization"},"mainEntityOfPage":"https://aiaxom.co.in/research/helmet-detection/results/","url":"https://aiaxom.co.in/research/helmet-detection/results/","isAccessibleForFree":true,"keywords":"helmet detection accuracy, helmet detection benchmark, YOLOv8 helmet detection results, mAP, precision recall helmet, CCTV helmet detection results, Axom AI","about":[{"@type":"Thing","name":"Helmet detection"},{"@type":"Thing","name":"Benchmark"},{"@type":"Thing","name":"Precision and recall"},{"@type":"Thing","name":"YOLO"}],"speakable":{"@type":"SpeakableSpecification","cssSelector":[".answer","h1"]},"citation":[{"@type":"CreativeWork","name":"HELMET dataset (Myanmar traffic cameras, CC BY 4.0)","url":"https://osf.io/4pwj8/"}]}</script>
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
+<div class="progress" aria-hidden="true"></div>
 <header class="site-header"><div class="wrap bar">
 <a class="brand" href="/"><img src="/axom-browser-logo.png" width="40" height="40" alt="Axom AI logo"><span><b>Axom AI</b><small>SMART &bull; ASSAMESE &bull; AI FOR ALL</small></span></a>
 <button class="menu-btn" type="button" aria-expanded="false" aria-controls="site-nav" aria-label="Open menu">&#9776;</button>
-<nav class="nav" id="site-nav" aria-label="Main"><a href="/tools">AI Tools</a><a href="https://chat.aiaxom.co.in/">Axom AI Chat</a><a href="/research/" aria-current="page">Research</a><a href="/use-cases">Use Cases</a><a href="/pricing">Pricing</a><a href="/blog">Blog</a><a href="/faq">FAQ</a><a href="/about">About</a><a href="/contact">Contact</a></nav>
+<nav class="nav" id="site-nav" aria-label="Main"><a href="/tools">AI Tools</a><a href="/use-cases">Use Cases</a><a href="/pricing">Pricing</a><a href="/blog">Blog &amp; Insights</a><a href="/research/" aria-current="page">Research</a><a href="/faq">FAQ</a><a href="/about">About Us</a><a href="/contact">Contact Us</a><a class="cta-pill" href="https://chat.aiaxom.co.in/">Try Axom AI &rarr;</a></nav>
 </div></header>
 <nav class="crumbs wrap" aria-label="Breadcrumb"><ol><li><a href="/">Home</a></li><li><a href="/research/">Research</a></li><li><a href="/research/helmet-detection/">Helmet detection</a></li><li>Results</li></ol></nav>
 <main id="main">
 <article>
-<header class="hero wrap"><span class="eyebrow">Results &amp; benchmarks</span>
+<header class="hero wrap"><span class="badge">Results &amp; benchmarks</span>
 <h1>Helmet detection results: <span class="grad">what we measured</span></h1>
-<p class="lead">Accuracy, speed, night behaviour and the mistakes we made on the way. Every number says what it was measured on.</p><p class="meta"><span>By <strong><a href="https://github.com/Samarjitkashyp">Samarjit Kashyap</a></strong>, Axom AI</span><span>Published <strong><time datetime="2026-10-26">26 Oct 2026</time></strong></span><span>Updated <strong><time datetime="2026-10-26">26 Oct 2026</time></strong></span></p></header>
-<div class="wrap"><div class="read" style="margin:0">
+<p class="lead">Accuracy, speed, night behaviour and the mistakes we made on the way. Every number says what it was measured on.</p><p class="meta"><span class="who"><span class="avatar" aria-hidden="true">S</span><span>By <strong><a href="https://github.com/Samarjitkashyp">Samarjit Kashyap</a></strong>, Axom AI</span></span><span>Published <strong><time datetime="2026-10-26">26 Oct 2026</time></strong></span><span>Updated <strong><time datetime="2026-10-26">26 Oct 2026</time></strong></span></p></header>
+<div class="wrap layout has-side"><aside class="side" aria-label="Contents"><nav class="toc" aria-label="On this page"><b>On this page</b><ol><li><a href="#how-we-measured">How we measured</a></li><li><a href="#1-the-model-on-held-out-cctv-frames">The model on held-out CCTV frames</a></li><li><a href="#2-the-first-model-on-public-test-sets">The first model on public test sets</a></li><li><a href="#3-the-live-cctv-worker-at-different-speeds">The live CCTV worker at different speeds</a></li><li><a href="#4-what-each-part-of-the-pipeline-adds">What each part of the pipeline adds</a></li><li><a href="#5-speed-on-a-cpu-and-the-trade-off">Speed on a CPU, and the trade-off</a></li><li><a href="#6-night">Night</a></li><li><a href="#what-went-wrong-and-what-it-taught-us">What went wrong, and what it taught us</a></li><li><a href="#keep-reading">Keep reading</a></li></ol></nav></aside><div class="prose"><nav class="toc" aria-label="On this page"><b>On this page</b><ol><li><a href="#how-we-measured">How we measured</a></li><li><a href="#1-the-model-on-held-out-cctv-frames">The model on held-out CCTV frames</a></li><li><a href="#2-the-first-model-on-public-test-sets">The first model on public test sets</a></li><li><a href="#3-the-live-cctv-worker-at-different-speeds">The live CCTV worker at different speeds</a></li><li><a href="#4-what-each-part-of-the-pipeline-adds">What each part of the pipeline adds</a></li><li><a href="#5-speed-on-a-cpu-and-the-trade-off">Speed on a CPU, and the trade-off</a></li><li><a href="#6-night">Night</a></li><li><a href="#what-went-wrong-and-what-it-taught-us">What went wrong, and what it taught us</a></li><li><a href="#keep-reading">Keep reading</a></li></ol></nav>
 <div class="answer"><h2>Quick answer</h2>
 <p>After fine-tuning on CCTV frames, recall on held-out frames rose from 0.62 to 0.79 and mAP@50 from 0.55 to 0.75. In the live CCTV worker, about 74% of bare-headed riders were alerted when one frame per second was analysed and about 90% at two frames per second, with about 1% of alerts on fully helmeted bikes. On night-like frames recall is only 0.34, and night training is still to be done.</p></div>
 
-<h2>How we measured</h2>
+<h2 id="how-we-measured">How we measured</h2>
 <ul>
 <li><strong>Data.</strong> The HELMET dataset: 910 clips (100 frames each, 1080p, 10 fps) from traffic cameras in Myanmar, CC BY 4.0. It labels every motorcycle with the helmet state of each person on it.</li>
 <li><strong>Honest split.</strong> We use the dataset's own split. Training used only the training clips; the numbers below come from validation or test clips the model never saw.</li>
 <li><strong>"Riders caught".</strong> For each clip, alerts are compared with the number of bare-headed people in the ground truth; an alert on a bike with a bare-headed rider counts as correct, an alert on a bike where everyone wears a helmet counts as a false alarm. Counts are approximate because the labels name bikes, not individual heads.</li>
 <li><strong>Limits of the test.</strong> One country, daytime, a few hundred riders. Treat the figures as a guide, not a promise for your camera.</li></ul>
 
-<h2>1. The model on held-out CCTV frames</h2>
+<h2 id="1-the-model-on-held-out-cctv-frames">1. The model on held-out CCTV frames</h2>
 <div class="table-wrap"><table><caption>500 validation frames, 1,114 riders, from clips not used for training (confidence 0.5, image size 960)</caption>
 <thead><tr><th>Model</th><th class="num">Precision</th><th class="num">Recall</th><th class="num">mAP@50</th></tr></thead>
 <tbody><tr><td>First model (public Roboflow data only)</td><td class="num">0.777</td><td class="num">0.617</td><td class="num">0.547</td></tr>
 <tr><td><strong>After CCTV fine-tuning</strong></td><td class="num good">0.798</td><td class="num good">0.791</td><td class="num good">0.748</td></tr></tbody></table></div>
 <p>Fine-tuning on a few thousand real CCTV frames matters more than anything else we tried: recall rose by 17 points.</p>
 
-<h2>2. The first model on public test sets</h2>
+<h2 id="2-the-first-model-on-public-test-sets">2. The first model on public test sets</h2>
 <div class="table-wrap"><table><caption>Test splits of the public datasets (confidence 0.4, 640 px)</caption>
 <thead><tr><th>Test set</th><th>Class</th><th class="num">Precision</th><th class="num">Recall</th></tr></thead><tbody>
 <tr><td rowspan="2">Riders and people (300 images)</td><td>helmet</td><td class="num">0.93</td><td class="num">0.93</td></tr><tr><td>no helmet</td><td class="num">0.95</td><td class="num">0.84</td></tr>
 <tr><td rowspan="2">Caps, hats, hijabs (87 images)</td><td>helmet</td><td class="num">0.94</td><td class="num">0.85</td></tr><tr><td>no helmet</td><td class="num">0.87</td><td class="num">0.88</td></tr></tbody></table></div>
 <p>mAP@50 was 0.92 on riders and people and 0.91 on head coverings. Adding head-covering data lifted no-helmet recall on caps and hats from 0.21 to 0.88 without hurting the original set. These sets are easier than real CCTV, which is why the CCTV test above matters.</p>
 
-<h2>3. The live CCTV worker at different speeds</h2>
+<h2 id="3-the-live-cctv-worker-at-different-speeds">3. The live CCTV worker at different speeds</h2>
 <p>The worker analyses as many frames per second as the computer allows. How many riders get an alert depends strongly on that rate. Test: 14 of the busiest held-out clips with 170 bare-headed riders.</p>
 <div role="group" aria-label="Share of bare-headed riders alerted">
 <div class="bar-row"><span>1 frame / second</span><div class="bar-track" role="img" aria-label="1 frame / second: 74%"><div class="bar-fill" style="width:74%"></div></div><b>74%</b></div><div class="bar-row"><span>2 frames / second</span><div class="bar-track" role="img" aria-label="2 frames / second: 90%"><div class="bar-fill" style="width:90%"></div></div><b>90%</b></div></div>
@@ -96,7 +97,7 @@
 <tr><td>2</td><td class="num good">about 90%</td><td class="num">44</td><td class="num">1 (about 1%)</td></tr></tbody></table></div>
 <p>Faster analysis catches more riders but also alerts the same person more than once. A repeat filter keeps this in check; a stricter filter removed the repeats but also hid real riders, so we kept it mild.</p>
 
-<h2>4. What each part of the pipeline adds</h2>
+<h2 id="4-what-each-part-of-the-pipeline-adds">4. What each part of the pipeline adds</h2>
 <div class="table-wrap"><table><caption>299 motorcycles in 52 test clips, before CCTV fine-tuning</caption>
 <thead><tr><th>Setup</th><th class="num">Bare-headed bikes caught</th><th class="num">Recall</th><th class="num">False alarms on helmeted bikes</th><th class="num">Precision</th></tr></thead><tbody>
 <tr><td>Detector alone</td><td class="num">213 / 299</td><td class="num">0.71</td><td class="num">25 / 164</td><td class="num">0.89</td></tr>
@@ -108,7 +109,7 @@
 <tr><td>Plus enlarged crops (first try)</td><td class="num">0.86</td><td>Too good: giant boxes around a whole rider and bike inflated it.</td></tr>
 <tr><td>Crops plus size check</td><td class="num good">0.76</td><td>The honest gain from crops.</td></tr></tbody></table></div>
 
-<h2>5. Speed on a CPU, and the trade-off</h2>
+<h2 id="5-speed-on-a-cpu-and-the-trade-off">5. Speed on a CPU, and the trade-off</h2>
 <p>Test machine: desktop Intel Core i3-10100F, no GPU.</p>
 <div class="table-wrap"><table><caption>Time per analysed frame and riders caught when frames are 0.5 s apart</caption>
 <thead><tr><th>Enlarged crops around motorcycles</th><th class="num">Riders alerted</th><th>Speed</th></tr></thead><tbody>
@@ -118,21 +119,21 @@
 <tr><td>Every frame</td><td class="num">90%</td><td>about 1.3 s per frame</td></tr></tbody></table></div>
 <p>Crops help, but they cost time, and time means fewer frames per second. We run crops on every 5th frame and reach about 1.4 analysed frames per second on this CPU. A GPU or a faster CPU would let us analyse more frames and catch more riders.</p>
 
-<h2>6. Night</h2>
+<h2 id="6-night">6. Night</h2>
 <div class="table-wrap"><table><caption>The same 200 validation frames in daylight and made to look like night (darkened, infrared-style, dusk)</caption>
 <thead><tr><th>Lighting</th><th class="num">Precision</th><th class="num">Recall</th><th class="num">mAP@50</th></tr></thead><tbody>
 <tr><td>Daylight</td><td class="num">0.80</td><td class="num">0.76</td><td class="num">0.72</td></tr>
 <tr><td>Made to look like night</td><td class="num">0.78</td><td class="num warn">0.34</td><td class="num">0.31</td></tr></tbody></table></div>
 <div class="note"><p>This was measured <em>before</em> the model saw any night-style images. We have prepared night-style training data, but it is a stand-in; real night footage from your own cameras will help far more.</p></div>
 
-<h2>What went wrong, and what it taught us</h2>
+<h2 id="what-went-wrong-and-what-it-taught-us">What went wrong, and what it taught us</h2>
 <ul>
 <li><strong>A result that was too good.</strong> Enlarged crops first showed recall 0.86. Looking at the pictures showed giant boxes covering a whole rider and bike. A size check brought recall to 0.76. <em>Always look at the pictures.</em></li>
 <li><strong>A tracker built for the wrong frame rate.</strong> ByteTrack hid new riders until a second match. At one frame per second most riders never got one, and four of five crowded clips gave no alert. A tracker made for low frame rates fixed it.</li>
 <li><strong>A filter that was too strict.</strong> The first repeat filter removed duplicate alerts but also hid real riders: coverage fell from about 89% to 70%. We relaxed it.</li>
 <li><strong>A slow training run.</strong> Using all mined crops made classifier training take far too long on a CPU. Capping and balancing the data made it practical with no loss in accuracy.</li></ul>
 
-<h2>Keep reading</h2>
+<h2 id="keep-reading">Keep reading</h2>
 <div class="related"><a class="card" href="/research/helmet-detection/how-it-works/"><span class="tag">Explained</span><h3>How it works, A to Z</h3><p>The pipeline and the reasons behind each step.</p></a><a class="card" href="/research/helmet-detection/model-card/"><span class="tag">Reference</span><h3>Model card</h3><p>Intended use, data, limits and licences.</p></a><a class="card" href="/research/helmet-detection/faq/"><span class="tag">Answers</span><h3>Helmet detection FAQ</h3><p>Short answers to common questions.</p></a></div>
 </div></div></article></main>
 <footer class="site-footer"><div class="wrap">
@@ -146,5 +147,5 @@
 </div>
 <div class="foot-bottom"><span>&copy; 2026 Axom AI. All rights reserved.</span><span><a href="/privacy">Privacy Policy</a> &middot; <a href="/terms">Terms of Service</a> &middot; <a href="/cookie-policy">Cookie Policy</a></span><span>Made with &hearts; in Assam, India</span></div>
 </div></footer>
-<script src="/research/assets/research.js?v=20261026" defer></script>
+<script src="/research/assets/research.js?v=20261026b" defer></script>
 </body></html>

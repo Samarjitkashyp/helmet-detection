@@ -1,6 +1,7 @@
 """Hub page, helmet-detection overview and the A-to-Z "how it works" page."""
+from diagram import PIPELINE_SVG
 from lib import (APP_PAGE, BASE, GITHUB_APP, GITHUB_BACKEND, MODIFIED, WHO_URL, article_schema, e, faq_schema,
-                 meta_line, related)
+                 meta_line, related, stat)
 
 HD = "/research/helmet-detection/"
 WHO_TEXT = ("WHO reports that head trauma is the leading cause of death for motorcycle riders, and that safe, quality helmets "
@@ -33,7 +34,7 @@ def hub():
             {"@type": "ListItem", "position": 1, "url": BASE + HD, "name": "Helmet Detection: AI that checks every rider, from a phone video or a CCTV camera"}]}}]
     body = f'''
 <section class="hero wrap">
-<span class="eyebrow">Axom AI Research</span>
+<span class="eyebrow">Official Axom AI Research</span>
 <h1>Practical AI built in Assam, <span class="grad">published with real numbers</span></h1>
 <p class="lead">What we built, how we measured it, what worked, what failed and what we still cannot do. Every report links to its code, its data and its limits.</p>
 {meta_line()}
@@ -43,12 +44,12 @@ def hub():
 <p>Axom AI Research is the home of technical reports from Axom AI, Assam's first indigenous generative AI platform. Each report explains a system we built, the data and tools behind it, the results we measured on data the model had never seen, and the places where it still fails.</p></div></div></div>
 
 <section class="wrap"><h2>Featured report</h2>
-<a class="card" href="{HD}" style="padding:0;overflow:hidden">
-<img src="/research/assets/detection-junction.jpg" width="1280" height="720" alt="Traffic junction where an AI model marks each rider with a red box for no helmet or a green box for helmet; faces are pixelated" style="width:100%;border-radius:0;border:0" loading="eager" fetchpriority="high">
-<div style="padding:20px 22px 24px"><span class="tag">Computer vision &middot; Road safety</span>
-<h3 style="margin-top:0;font-size:1.5rem">Helmet Detection: every rider checked, from a phone video or a CCTV camera</h3>
+<a class="card feature" href="{HD}">
+<div><span class="tag">Computer vision &middot; Road safety</span>
+<h3>Helmet Detection: every rider checked, from a phone video or a CCTV camera</h3>
 <p>An end-to-end system: YOLOv8 detection, per-rider tracking, an Android app, an admin dashboard and live CCTV alerts. Recall on held-out CCTV frames rose from 0.62 to 0.79 after fine-tuning; the live worker caught about 90% of bare-headed riders at two analysed frames per second.</p>
-<p style="margin:0"><strong class="grad">Read the report &rarr;</strong></p></div></a>
+<p class="more">Read the report &rarr;</p></div>
+<img src="/research/assets/detection-junction.jpg" width="1280" height="720" alt="Traffic junction where an AI model marks each rider with a red box for no helmet or a green box for helmet; faces are pixelated" loading="eager" fetchpriority="high"></a>
 </section>
 
 <section class="wrap"><h2>How we publish</h2>
@@ -95,23 +96,27 @@ def overview():
     faq_html = "".join(f"<details><summary>{e(q)}</summary><p>{e(a)}</p></details>" for q, a in OVERVIEW_FAQ)
     body = f'''
 <article>
-<header class="hero wrap">
-<span class="eyebrow">Research &middot; Computer vision &middot; Road safety</span>
+<header class="hero wrap"><div class="hero-grid">
+<div>
+<span class="eyebrow">Official Axom AI research &middot; Road safety</span>
 <h1>Helmet Detection AI: <span class="grad">every rider checked,</span> from a phone video or a CCTV camera</h1>
 <p class="lead">An end-to-end system from Axom AI that finds each motorcycle rider, decides helmet or no helmet, and sends a photo alert for every rider without one.</p>
 {meta_line()}
 <div class="cta"><a class="btn primary" href="{url}results/">See the results</a><a class="btn" href="{GITHUB_BACKEND}">View code on GitHub</a><a class="btn" href="{APP_PAGE}">Try the Android app</a></div>
-</header>
+</div>
+<div class="hero-visual"><img src="/research/assets/detection-junction.jpg" width="1280" height="720" alt="Busy junction where an AI model marks every motorcycle rider with a red box for no helmet or a green box for helmet; faces are pixelated" fetchpriority="high">
+<div class="float b"><b>~90%</b>of bare-headed riders alerted</div><div class="float a"><b>0.79</b>recall on held-out CCTV frames</div></div>
+</div></header>
 
 <div class="wrap"><div class="read" style="margin:0">
 <div class="answer"><h2>Quick answer</h2>
 <p><strong>Helmet detection is computer vision that finds motorcycle riders and decides, person by person, whether a helmet is worn.</strong> Axom AI's system does this on uploaded videos and on live CCTV streams. On traffic-camera footage it had never seen, it caught about 74% of bare-headed riders when analysing one frame per second and about 90% at two frames per second, with about 1% of alerts on fully helmeted bikes. It runs on a normal CPU, with no GPU.</p></div>
 
 <div class="stats" role="list">
-<div class="stat" role="listitem"><b>0.79</b><span>recall on held-out CCTV frames after fine-tuning (was 0.62)</span></div>
-<div class="stat" role="listitem"><b>~90%</b><span>of bare-headed riders alerted at 2 analysed frames per second</span></div>
-<div class="stat" role="listitem"><b>~1%</b><span>of alerts on fully helmeted bikes (false alarms)</span></div>
-<div class="stat" role="listitem"><b>1.4 fps</b><span>analysed on a desktop Intel Core i3 CPU, no GPU</span></div>
+{stat("target", "0.79", "recall on held-out CCTV frames after fine-tuning (was 0.62)")}
+{stat("users", "~90%", "of bare-headed riders alerted at 2 analysed frames per second")}
+{stat("shield", "~1%", "of alerts on fully helmeted bikes (false alarms)")}
+{stat("bolt", "1.4 fps", "analysed on a desktop Intel Core i3 CPU, no GPU")}
 </div>
 
 <nav class="toc" aria-label="On this page"><b>On this page</b><ol>
@@ -221,18 +226,7 @@ def how_it_works():
                                    cites=[("Ultralytics YOLOv8", "https://github.com/ultralytics/ultralytics"),
                                           ("ByteTrack: multi-object tracking by associating every detection box", "https://arxiv.org/abs/2110.06864"),
                                           ("COCO dataset", "https://cocodataset.org/")])]
-    svg = '''<svg viewBox="0 0 920 250" role="img" aria-labelledby="flowT flowD" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto">
-<title id="flowT">Helmet detection pipeline</title><desc id="flowD">A camera or phone sends frames to a worker that finds motorcycles, heads and helmet verdicts, tracks each rider, and sends alerts to the server, which notifies Telegram, the dashboard and the app.</desc>
-<defs><marker id="ar" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#34d399"/></marker></defs>
-<g font-family="Plus Jakarta Sans, system-ui, sans-serif" font-size="15" fill="#e5e7eb" text-anchor="middle">
-<rect x="10" y="85" width="140" height="70" rx="14" fill="#10b9811f" stroke="#34d399"/><text x="80" y="115" font-weight="700">Camera</text><text x="80" y="136" fill="#a3b2c7" font-size="13">or phone video</text>
-<rect x="200" y="30" width="250" height="190" rx="14" fill="#ffffff0d" stroke="#ffffff30"/><text x="325" y="56" font-weight="700" fill="#34d399">Worker (PC or server)</text>
-<text x="325" y="88">1. find motorcycles</text><text x="325" y="114">2. find heads (frame + crops)</text><text x="325" y="140">3. helmet / no helmet</text><text x="325" y="166">4. track every rider</text><text x="325" y="192">5. confirm once</text>
-<rect x="500" y="85" width="150" height="70" rx="14" fill="#10b9811f" stroke="#34d399"/><text x="575" y="115" font-weight="700">Server</text><text x="575" y="136" fill="#a3b2c7" font-size="13">API + database</text>
-<rect x="710" y="10" width="200" height="56" rx="14" fill="#ffffff0d" stroke="#ffffff30"/><text x="810" y="44">Telegram message</text>
-<rect x="710" y="97" width="200" height="56" rx="14" fill="#ffffff0d" stroke="#ffffff30"/><text x="810" y="131">Admin dashboard</text>
-<rect x="710" y="184" width="200" height="56" rx="14" fill="#ffffff0d" stroke="#ffffff30"/><text x="810" y="218">Android app Alerts</text>
-</g><g stroke="#34d399" stroke-width="2.4" fill="none" marker-end="url(#ar)"><path d="M150 120 H196"/><path d="M450 120 H496"/><path d="M650 120 C680 120 680 38 706 38"/><path d="M650 125 H706"/><path d="M650 130 C680 130 680 212 706 212"/></g></svg>'''
+    svg = PIPELINE_SVG
     body = f'''
 <article>
 <header class="hero wrap">

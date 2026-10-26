@@ -44,7 +44,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/research/assets/research.css?v=20261026">
+<link rel="stylesheet" href="/research/assets/research.css?v=20261026b">
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://aiaxom.co.in/"},{"@type":"ListItem","position":2,"name":"Research","item":"https://aiaxom.co.in/research/"},{"@type":"ListItem","position":3,"name":"Helmet detection","item":"https://aiaxom.co.in/research/helmet-detection/"}]}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","@id":"https://aiaxom.co.in/research/helmet-detection/#article","headline":"Helmet Detection AI: every rider checked, from a phone video or a CCTV camera","description":"Axom AI helmet detection finds riders without helmets in phone videos and CCTV. YOLOv8, per-rider tracking, instant alerts, measured results and open source.","image":["https://aiaxom.co.in/research/assets/og-helmet-detection.jpg"],"inLanguage":"en-IN","datePublished":"2026-10-26","dateModified":"2026-10-26","author":{"@type":"Person","name":"Samarjit Kashyap","url":"https://github.com/Samarjitkashyp","jobTitle":"Founder, Axom AI","worksFor":{"@id":"https://aiaxom.co.in/#organization"}},"publisher":{"@id":"https://aiaxom.co.in/#organization"},"mainEntityOfPage":"https://aiaxom.co.in/research/helmet-detection/","url":"https://aiaxom.co.in/research/helmet-detection/","isAccessibleForFree":true,"keywords":"helmet detection, AI helmet detection, helmet detection using YOLOv8, no helmet detection, CCTV helmet detection, artificial intelligence, computer vision, road safety AI, Axom AI","about":[{"@type":"Thing","name":"Helmet detection"},{"@type":"Thing","name":"Computer vision"},{"@type":"Thing","name":"Road safety"},{"@type":"Thing","name":"YOLO"},{"@type":"Thing","name":"Closed-circuit television"}],"speakable":{"@type":"SpeakableSpecification","cssSelector":[".answer","h1"]},"citation":[{"@type":"CreativeWork","name":"WHO: new guide to boost the use of life-saving helmets for motorcycle riders","url":"https://www.who.int/news/item/05-04-2023-new-who-guide-aims-to-boost-the-use-of-life-saving-helmets-for-motorcycle-riders"},{"@type":"CreativeWork","name":"HELMET dataset (Myanmar traffic cameras, CC BY 4.0)","url":"https://osf.io/4pwj8/"},{"@type":"CreativeWork","name":"Ultralytics YOLOv8","url":"https://github.com/ultralytics/ultralytics"}]}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareSourceCode","name":"helmet-detection (backend, CCTV worker, training tools)","codeRepository":"https://github.com/Samarjitkashyp/helmet-detection","programmingLanguage":"Python","license":"https://opensource.org/licenses/MIT","author":{"@type":"Person","name":"Samarjit Kashyap"},"runtimePlatform":"Python 3.11+"}</script>
@@ -53,31 +53,41 @@
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
+<div class="progress" aria-hidden="true"></div>
 <header class="site-header"><div class="wrap bar">
 <a class="brand" href="/"><img src="/axom-browser-logo.png" width="40" height="40" alt="Axom AI logo"><span><b>Axom AI</b><small>SMART &bull; ASSAMESE &bull; AI FOR ALL</small></span></a>
 <button class="menu-btn" type="button" aria-expanded="false" aria-controls="site-nav" aria-label="Open menu">&#9776;</button>
-<nav class="nav" id="site-nav" aria-label="Main"><a href="/tools">AI Tools</a><a href="https://chat.aiaxom.co.in/">Axom AI Chat</a><a href="/research/" aria-current="page">Research</a><a href="/use-cases">Use Cases</a><a href="/pricing">Pricing</a><a href="/blog">Blog</a><a href="/faq">FAQ</a><a href="/about">About</a><a href="/contact">Contact</a></nav>
+<nav class="nav" id="site-nav" aria-label="Main"><a href="/tools">AI Tools</a><a href="/use-cases">Use Cases</a><a href="/pricing">Pricing</a><a href="/blog">Blog &amp; Insights</a><a href="/research/" aria-current="page">Research</a><a href="/faq">FAQ</a><a href="/about">About Us</a><a href="/contact">Contact Us</a><a class="cta-pill" href="https://chat.aiaxom.co.in/">Try Axom AI &rarr;</a></nav>
 </div></header>
 <nav class="crumbs wrap" aria-label="Breadcrumb"><ol><li><a href="/">Home</a></li><li><a href="/research/">Research</a></li><li>Helmet detection</li></ol></nav>
 <main id="main">
 <article>
-<header class="hero wrap">
-<span class="eyebrow">Research &middot; Computer vision &middot; Road safety</span>
+<header class="hero wrap"><div class="hero-grid">
+<div>
+<span class="badge">Official Axom AI research &middot; Road safety</span>
 <h1>Helmet Detection AI: <span class="grad">every rider checked,</span> from a phone video or a CCTV camera</h1>
 <p class="lead">An end-to-end system from Axom AI that finds each motorcycle rider, decides helmet or no helmet, and sends a photo alert for every rider without one.</p>
-<p class="meta"><span>By <strong><a href="https://github.com/Samarjitkashyp">Samarjit Kashyap</a></strong>, Axom AI</span><span>Published <strong><time datetime="2026-10-26">26 Oct 2026</time></strong></span><span>Updated <strong><time datetime="2026-10-26">26 Oct 2026</time></strong></span></p>
+<p class="meta"><span class="who"><span class="avatar" aria-hidden="true">S</span><span>By <strong><a href="https://github.com/Samarjitkashyp">Samarjit Kashyap</a></strong>, Axom AI</span></span><span>Published <strong><time datetime="2026-10-26">26 Oct 2026</time></strong></span><span>Updated <strong><time datetime="2026-10-26">26 Oct 2026</time></strong></span></p>
 <div class="cta"><a class="btn primary" href="/research/helmet-detection/results/">See the results</a><a class="btn" href="https://github.com/Samarjitkashyp/helmet-detection">View code on GitHub</a><a class="btn" href="https://helmet-detection.aiaxom.co.in/app">Try the Android app</a></div>
-</header>
+</div>
+<div class="hero-visual"><img src="/research/assets/detection-junction.jpg" width="1280" height="720" alt="Busy junction where an AI model marks every motorcycle rider with a red box for no helmet or a green box for helmet; faces are pixelated" fetchpriority="high">
+<div class="float b"><b>~90%</b>of bare-headed riders alerted</div><div class="float a"><b>0.79</b>recall on held-out CCTV frames</div></div>
+</div></header>
 
-<div class="wrap"><div class="read" style="margin:0">
+<div class="wrap layout has-side"><aside class="side" aria-label="Contents"><nav class="toc" aria-label="On this page"><b>On this page</b><ol>
+<li><a href="#why">Why helmet detection matters</a></li><li><a href="#built">What Axom AI built</a></li>
+<li><a href="#see">See it work</a></li><li><a href="#steps">How it works in eight steps</a></li>
+<li><a href="#used">What we used</a></li><li><a href="#results">How well it works</a></li>
+<li><a href="#limits">Honest limits</a></li><li><a href="#open">Open source and links</a></li>
+<li><a href="#cite">Cite this work</a></li><li><a href="#faq">FAQ</a></li></ol></nav></aside><div class="prose">
 <div class="answer"><h2>Quick answer</h2>
 <p><strong>Helmet detection is computer vision that finds motorcycle riders and decides, person by person, whether a helmet is worn.</strong> Axom AI's system does this on uploaded videos and on live CCTV streams. On traffic-camera footage it had never seen, it caught about 74% of bare-headed riders when analysing one frame per second and about 90% at two frames per second, with about 1% of alerts on fully helmeted bikes. It runs on a normal CPU, with no GPU.</p></div>
 
 <div class="stats" role="list">
-<div class="stat" role="listitem"><b>0.79</b><span>recall on held-out CCTV frames after fine-tuning (was 0.62)</span></div>
-<div class="stat" role="listitem"><b>~90%</b><span>of bare-headed riders alerted at 2 analysed frames per second</span></div>
-<div class="stat" role="listitem"><b>~1%</b><span>of alerts on fully helmeted bikes (false alarms)</span></div>
-<div class="stat" role="listitem"><b>1.4 fps</b><span>analysed on a desktop Intel Core i3 CPU, no GPU</span></div>
+<div class="stat" role="listitem"><div class="ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg></div><b>0.79</b><span>recall on held-out CCTV frames after fine-tuning (was 0.62)</span></div>
+<div class="stat" role="listitem"><div class="ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.9M16 3.1a4 4 0 0 1 0 7.8"/></svg></div><b>~90%</b><span>of bare-headed riders alerted at 2 analysed frames per second</span></div>
+<div class="stat" role="listitem"><div class="ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg></div><b>~1%</b><span>of alerts on fully helmeted bikes (false alarms)</span></div>
+<div class="stat" role="listitem"><div class="ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2 3 14h9l-1 8 10-12h-9z"/></svg></div><b>1.4 fps</b><span>analysed on a desktop Intel Core i3 CPU, no GPU</span></div>
 </div>
 
 <nav class="toc" aria-label="On this page"><b>On this page</b><ol>
@@ -163,7 +173,7 @@
 <details><summary>What is helmet detection?</summary><p>Helmet detection is a computer vision task: a model looks at a photo, video or camera stream, finds each motorcycle rider and decides whether that person is wearing a helmet. Axom AI&#x27;s system also saves a photo for every rider without a helmet.</p></details><details><summary>How accurate is Axom AI helmet detection?</summary><p>On held-out traffic-camera footage the live system caught about 74% of bare-headed riders when it analysed one frame per second and about 90% at two frames per second, with roughly 1% of alerts landing on fully helmeted bikes. After CCTV fine-tuning, recall on held-out frames rose from 0.62 to 0.79.</p></details><details><summary>Does it work on CCTV cameras?</summary><p>Yes. A worker program reads the camera&#x27;s RTSP stream, tracks every rider separately and sends a photo alert to Telegram, the admin dashboard and the Axom AI Android app for each rider without a helmet.</p></details><details><summary>Does it need a GPU?</summary><p>No. The whole pipeline runs on a desktop CPU (an Intel Core i3) at about 1.4 analysed frames per second. A faster CPU or a GPU analyses more frames per second, which catches more riders.</p></details><details><summary>Is the helmet detection code open source?</summary><p>Yes. The backend and the Android app are published on GitHub under the MIT licence. The model builds on Ultralytics YOLOv8 (AGPL-3.0) and public datasets released under CC BY 4.0 and MIT, so check those terms before commercial use.</p></details>
 <p><a href="/research/helmet-detection/faq/">More questions and answers &rarr;</a></p>
 
-<h2>Keep reading</h2>
+<h2 id="keep-reading">Keep reading</h2>
 <div class="related"><a class="card" href="/research/helmet-detection/how-it-works/"><span class="tag">Explained</span><h3>How it works, A to Z</h3><p>Every step, every tool, and why we chose it.</p></a><a class="card" href="/research/helmet-detection/results/"><span class="tag">Numbers</span><h3>Results and benchmarks</h3><p>Accuracy, speed, night tests and what went wrong.</p></a><a class="card" href="/research/helmet-detection/cctv-monitoring/"><span class="tag">Live</span><h3>CCTV monitoring</h3><p>Connect a camera and get alerts on Telegram and in the app.</p></a><a class="card" href="/research/helmet-detection/model-card/"><span class="tag">Reference</span><h3>Model card</h3><p>Intended use, data, limits and licences.</p></a></div>
 </div></div>
 </article></main>
@@ -178,5 +188,5 @@
 </div>
 <div class="foot-bottom"><span>&copy; 2026 Axom AI. All rights reserved.</span><span><a href="/privacy">Privacy Policy</a> &middot; <a href="/terms">Terms of Service</a> &middot; <a href="/cookie-policy">Cookie Policy</a></span><span>Made with &hearts; in Assam, India</span></div>
 </div></footer>
-<script src="/research/assets/research.js?v=20261026" defer></script>
+<script src="/research/assets/research.js?v=20261026b" defer></script>
 </body></html>

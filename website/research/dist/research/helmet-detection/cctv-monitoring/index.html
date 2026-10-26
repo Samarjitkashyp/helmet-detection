@@ -44,33 +44,34 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/research/assets/research.css?v=20261026">
+<link rel="stylesheet" href="/research/assets/research.css?v=20261026b">
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://aiaxom.co.in/"},{"@type":"ListItem","position":2,"name":"Research","item":"https://aiaxom.co.in/research/"},{"@type":"ListItem","position":3,"name":"Helmet detection","item":"https://aiaxom.co.in/research/helmet-detection/"},{"@type":"ListItem","position":4,"name":"CCTV monitoring","item":"https://aiaxom.co.in/research/helmet-detection/cctv-monitoring/"}]}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","@id":"https://aiaxom.co.in/research/helmet-detection/cctv-monitoring/#article","headline":"CCTV helmet detection: setup, alerts and tuning","description":"Connect an RTSP camera to Axom AI helmet detection. Per-rider tracking, photo alerts on Telegram, dashboard and Android app, offline warnings and Windows auto-start.","image":["https://aiaxom.co.in/research/assets/og-helmet-detection.jpg"],"inLanguage":"en-IN","datePublished":"2026-10-26","dateModified":"2026-10-26","author":{"@type":"Person","name":"Samarjit Kashyap","url":"https://github.com/Samarjitkashyp","jobTitle":"Founder, Axom AI","worksFor":{"@id":"https://aiaxom.co.in/#organization"}},"publisher":{"@id":"https://aiaxom.co.in/#organization"},"mainEntityOfPage":"https://aiaxom.co.in/research/helmet-detection/cctv-monitoring/","url":"https://aiaxom.co.in/research/helmet-detection/cctv-monitoring/","isAccessibleForFree":true,"keywords":"CCTV helmet detection, RTSP helmet detection, no helmet alert Telegram, traffic camera AI, helmet violation detection CCTV, Axom AI","about":[{"@type":"Thing","name":"CCTV"},{"@type":"Thing","name":"RTSP"},{"@type":"Thing","name":"Helmet detection"},{"@type":"Thing","name":"Telegram Bot API"}],"speakable":{"@type":"SpeakableSpecification","cssSelector":[".answer","h1"]}}</script>
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
+<div class="progress" aria-hidden="true"></div>
 <header class="site-header"><div class="wrap bar">
 <a class="brand" href="/"><img src="/axom-browser-logo.png" width="40" height="40" alt="Axom AI logo"><span><b>Axom AI</b><small>SMART &bull; ASSAMESE &bull; AI FOR ALL</small></span></a>
 <button class="menu-btn" type="button" aria-expanded="false" aria-controls="site-nav" aria-label="Open menu">&#9776;</button>
-<nav class="nav" id="site-nav" aria-label="Main"><a href="/tools">AI Tools</a><a href="https://chat.aiaxom.co.in/">Axom AI Chat</a><a href="/research/" aria-current="page">Research</a><a href="/use-cases">Use Cases</a><a href="/pricing">Pricing</a><a href="/blog">Blog</a><a href="/faq">FAQ</a><a href="/about">About</a><a href="/contact">Contact</a></nav>
+<nav class="nav" id="site-nav" aria-label="Main"><a href="/tools">AI Tools</a><a href="/use-cases">Use Cases</a><a href="/pricing">Pricing</a><a href="/blog">Blog &amp; Insights</a><a href="/research/" aria-current="page">Research</a><a href="/faq">FAQ</a><a href="/about">About Us</a><a href="/contact">Contact Us</a><a class="cta-pill" href="https://chat.aiaxom.co.in/">Try Axom AI &rarr;</a></nav>
 </div></header>
 <nav class="crumbs wrap" aria-label="Breadcrumb"><ol><li><a href="/">Home</a></li><li><a href="/research/">Research</a></li><li><a href="/research/helmet-detection/">Helmet detection</a></li><li>CCTV monitoring</li></ol></nav>
 <main id="main">
 <article>
-<header class="hero wrap"><span class="eyebrow">Live monitoring</span>
+<header class="hero wrap"><span class="badge">Live monitoring</span>
 <h1>CCTV helmet detection: <span class="grad">alerts within seconds</span></h1>
-<p class="lead">Connect an IP camera, and get a photo of every rider without a helmet on Telegram, in the dashboard and in the app.</p><p class="meta"><span>By <strong><a href="https://github.com/Samarjitkashyp">Samarjit Kashyap</a></strong>, Axom AI</span><span>Published <strong><time datetime="2026-10-26">26 Oct 2026</time></strong></span><span>Updated <strong><time datetime="2026-10-26">26 Oct 2026</time></strong></span></p></header>
-<div class="wrap"><div class="read" style="margin:0">
+<p class="lead">Connect an IP camera, and get a photo of every rider without a helmet on Telegram, in the dashboard and in the app.</p><p class="meta"><span class="who"><span class="avatar" aria-hidden="true">S</span><span>By <strong><a href="https://github.com/Samarjitkashyp">Samarjit Kashyap</a></strong>, Axom AI</span></span><span>Published <strong><time datetime="2026-10-26">26 Oct 2026</time></strong></span><span>Updated <strong><time datetime="2026-10-26">26 Oct 2026</time></strong></span></p></header>
+<div class="wrap layout has-side"><aside class="side" aria-label="Contents"><nav class="toc" aria-label="On this page"><b>On this page</b><ol><li><a href="#how-it-is-built">How it is built</a></li><li><a href="#set-it-up">Set it up</a></li><li><a href="#what-an-alert-contains">What an alert contains</a></li><li><a href="#tuning">Tuning</a></li><li><a href="#how-many-riders-will-it-catch">How many riders will it catch?</a></li><li><a href="#keep-reading">Keep reading</a></li></ol></nav></aside><div class="prose"><nav class="toc" aria-label="On this page"><b>On this page</b><ol><li><a href="#how-it-is-built">How it is built</a></li><li><a href="#set-it-up">Set it up</a></li><li><a href="#what-an-alert-contains">What an alert contains</a></li><li><a href="#tuning">Tuning</a></li><li><a href="#how-many-riders-will-it-catch">How many riders will it catch?</a></li><li><a href="#keep-reading">Keep reading</a></li></ol></nav>
 <div class="answer"><h2>Quick answer</h2>
 <p>A worker program runs on a PC near the camera. It reads the camera's RTSP stream, finds and tracks every rider, and uploads a photo for each rider without a helmet to the Axom AI server, which sends a Telegram message and shows the event in the dashboard and the Android app. A heartbeat every minute lets the server warn you if the PC or the stream stops.</p></div>
 
-<h2>How it is built</h2>
+<h2 id="how-it-is-built">How it is built</h2>
 <ul><li><strong>Worker (PC).</strong> Does the heavy AI work. Needs Python 3.11+ and the model files; no GPU.</li>
 <li><strong>Server.</strong> Stores events and photos, sends Telegram messages, serves the dashboard and the app. A small shared server is enough, because the server does no AI work for CCTV.</li>
 <li><strong>Safety.</strong> The worker and the server share a secret key. Camera passwords stay on the server and are never shown in full in the dashboard.</li></ul>
 
-<h2>Set it up</h2>
+<h2 id="set-it-up">Set it up</h2>
 <ol class="flow">
 <li><b>Add the camera.</b> Dashboard &rarr; Cameras &rarr; name and RTSP address, for example <code>rtsp://user:password@192.168.1.10:554/stream1</code>.</li>
 <li><b>Set the keys on the server.</b> A long random <code>CCTV_WORKER_KEY</code>, plus <code>TELEGRAM_BOT_TOKEN</code> and <code>TELEGRAM_CHAT_ID</code> from your own Telegram bot.</li>
@@ -80,7 +81,7 @@
 <pre><code>.\deploy\pc\install_autostart.ps1 -CameraId 1
 # several cameras: -CameraId 1,2,3   (one worker each; every worker uses CPU)</code></pre>
 
-<h2>What an alert contains</h2>
+<h2 id="what-an-alert-contains">What an alert contains</h2>
 <ul><li>A photo with <strong>every rider boxed</strong>: red for no helmet, green for helmet. New people have a thicker box.</li>
 <li>A line on the photo: how many are new and how many riders are in view.</li>
 <li>The camera name, the time and the confidence.</li>
@@ -88,7 +89,7 @@
 <figure><img src="/research/assets/detection-street.jpg" width="1280" height="720" alt="Example of an alert photo: motorcycle riders on a street boxed in red for no helmet; faces are pixelated here" loading="lazy">
 <figcaption>An alert photo from the public HELMET dataset, faces pixelated for this page.</figcaption></figure>
 
-<h2>Tuning</h2>
+<h2 id="tuning">Tuning</h2>
 <div class="table-wrap"><table><caption>Main options of the worker</caption><thead><tr><th>Option</th><th>Default</th><th>What it does</th></tr></thead><tbody>
 <tr><td><code>--imgsz</code></td><td>768</td><td>Whole-frame size. Larger sees smaller heads, slower.</td></tr>
 <tr><td><code>--crop-every</code></td><td>5</td><td>Enlarged crops around motorcycles on every Nth frame. 1 = most accurate, slowest.</td></tr>
@@ -97,11 +98,11 @@
 <tr><td><code>--max-fps</code></td><td>3</td><td>Upper limit of analysed frames per second.</td></tr>
 <tr><td><code>--all-heads</code></td><td>off</td><td>Alert for any bare head, not only motorcycle riders.</td></tr></tbody></table></div>
 
-<h2>How many riders will it catch?</h2>
+<h2 id="how-many-riders-will-it-catch">How many riders will it catch?</h2>
 <p>That depends on how many frames per second your computer can analyse: about 74% at one frame per second and about 90% at two in our tests (see <a href="/research/helmet-detection/results/">results</a>). Plan for a faster CPU or a GPU if the camera sees fast traffic or distant riders.</p>
 <div class="note"><p><strong>Use it responsibly.</strong> This is a screening tool. Have a person review alerts before any action against anyone, and follow the privacy and data-protection rules for cameras in your area.</p></div>
 
-<h2>Keep reading</h2>
+<h2 id="keep-reading">Keep reading</h2>
 <div class="related"><a class="card" href="/research/helmet-detection/how-it-works/"><span class="tag">Explained</span><h3>How it works, A to Z</h3><p>The pipeline in detail.</p></a><a class="card" href="/research/helmet-detection/results/"><span class="tag">Numbers</span><h3>Results</h3><p>Accuracy and speed.</p></a><a class="card" href="https://github.com/Samarjitkashyp/helmet-detection"><span class="tag">Open source</span><h3>Code on GitHub</h3><p>Worker, server and training tools (MIT).</p></a></div>
 </div></div></article></main>
 <footer class="site-footer"><div class="wrap">
@@ -115,5 +116,5 @@
 </div>
 <div class="foot-bottom"><span>&copy; 2026 Axom AI. All rights reserved.</span><span><a href="/privacy">Privacy Policy</a> &middot; <a href="/terms">Terms of Service</a> &middot; <a href="/cookie-policy">Cookie Policy</a></span><span>Made with &hearts; in Assam, India</span></div>
 </div></footer>
-<script src="/research/assets/research.js?v=20261026" defer></script>
+<script src="/research/assets/research.js?v=20261026b" defer></script>
 </body></html>
