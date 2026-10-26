@@ -1,5 +1,6 @@
 """The research hub (/research/). The helmet-detection report itself is in pages_hd.py."""
-from lib import BASE, MODIFIED, feature_card, hero
+from lib import BASE, MODIFIED, feature_card, hero, story_card
+from pages_bot import BOT, MINUTES as BOT_MINUTES
 from pages_hd import HD
 
 
@@ -13,7 +14,8 @@ def hub():
         "name": "Axom AI Research", "inLanguage": "en-IN", "isPartOf": {"@id": "https://aiaxom.co.in/#organization"},
         "description": p["description"], "dateModified": MODIFIED,
         "mainEntity": {"@type": "ItemList", "itemListElement": [
-            {"@type": "ListItem", "position": 1, "url": BASE + HD, "name": "Helmet Detection: AI that checks every rider, from a phone video or a CCTV camera"}]}}]
+            {"@type": "ListItem", "position": 1, "url": BASE + HD, "name": "Helmet Detection: AI that checks every rider, from a phone video or a CCTV camera"},
+            {"@type": "ListItem", "position": 2, "url": BASE + BOT, "name": "Axom AI Crawler Bot: websites and documents turned into answers"}]}}]
     body = f'''
 {hero("Official Axom AI Research",
       'Practical AI built in Assam, <span class="grad">published with real numbers</span>',
@@ -28,6 +30,13 @@ def hub():
               "An end-to-end system: YOLOv8 detection, per-rider tracking, an Android app, an admin dashboard and live CCTV alerts. Recall on held-out CCTV frames rose from 0.62 to 0.79 after fine-tuning; the live worker caught about 90% of bare-headed riders at two analysed frames per second.",
               "/research/assets/detection-junction.jpg", "Traffic junction where an AI model marks each rider with a red box for no helmet or a green box for helmet; faces are pixelated",
               MINUTES, "Oct 26, 2026")}
+<p class="section-label">More research</p>
+<div class="s-grid">
+{story_card(BOT, "AI · Knowledge for chat", "Axom AI Crawler Bot: websites and documents turned into answers",
+            "How a private tool reads websites and scanned Assamese, Hindi and English documents, cleans the text and writes a question for every passage, so the Axom AI chat can answer from them.",
+            "/research/assets/card-crawler-bot.jpg", "Crawler bot pipeline: website, clean text, questions, Axom AI chat",
+            BOT_MINUTES, "Oct 26, 2026")}
+</div>
 </section>'''
     return p, body
 

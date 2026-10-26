@@ -8,6 +8,7 @@
 - [Helmet Detection](https://aiaxom.co.in/research/helmet-detection/): AI that checks every motorcycle rider for a helmet, from phone videos and CCTV cameras. YOLOv8, per-rider tracking, Telegram / dashboard / app alerts. Open source (MIT).
   The one page holds everything: how it works from A to Z (#how), results and benchmarks (#results), CCTV set-up (#cctv), honest limits (#limits), model card (#model), open source links (#open) and the FAQ (#faq).
 - [Key facts as JSON](https://aiaxom.co.in/research/helmet-detection/key-facts.json)
+- [Axom AI Crawler Bot](https://aiaxom.co.in/research/axom-ai-crawler-bot/): how a private tool turns websites and scanned Assamese, Hindi and English documents into clean passages with one AI-written question each for the Axom AI chat. Fetching (HTTP, headless browser, WordPress API), change detection with SHA-256, boilerplate cleaning with safety gates, document OCR with Gemini vision, admin approval, measured results and limits.
 
 ## Key facts (helmet detection, updated 2026-10-26)
 
