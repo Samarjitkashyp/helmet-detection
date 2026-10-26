@@ -311,3 +311,23 @@ details p:last-child { margin-bottom: 16px; }
 .s-foot .who { display: inline-flex; align-items: center; gap: 10px; }
 .s-foot .avatar { width: 30px; height: 30px; font-size: 11px; }
 .s-foot .r { color: var(--amber-text); font-weight: 800; }
+
+/* AI Tools menu, as in the home page header */
+.dd { position: relative; }
+.dd-toggle { display: inline-flex; align-items: center; gap: 6px; }
+.dd-panel { display: none; position: absolute; left: -12px; top: 100%; width: 560px; padding: 12px; grid-template-columns: 1fr 1fr; gap: 4px; background: var(--card-solid); border: 1px solid var(--line); border-radius: 18px; box-shadow: var(--shadow-lg); z-index: 80; }
+.dd:hover .dd-panel, .dd:focus-within .dd-panel { display: grid; }
+.dd-panel a { display: block; padding: 10px 14px; border-radius: 12px; border: 0; line-height: 1.35; white-space: normal; }
+.dd-panel a b { display: block; font-size: 14.5px; color: var(--head); font-weight: 800; }
+.dd-panel a span { display: block; font-size: 12.5px; color: var(--muted); font-weight: 500; margin-top: 2px; }
+.dd-panel a:hover { background: var(--em-soft); }
+.dd-panel .dd-all { grid-column: 1 / -1; text-align: center; font-weight: 800; color: var(--em-text); border-top: 1px solid var(--line); border-radius: 0 0 12px 12px; margin-top: 6px; padding-top: 14px; }
+@media (max-width: 1180px) {
+  .dd-panel { display: grid; position: static; width: auto; padding: 0 0 6px 14px; grid-template-columns: 1fr; border: 0; box-shadow: none; background: transparent; }
+  .dd-panel a span { display: none; }
+  .dd-panel a { padding: 8px 12px; }
+}
+.nav .cta-pill { font-size: 14px; padding: 10px 20px; }
+.social { display: flex; gap: 10px; margin-top: 18px; }
+.site-footer .social a { width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center; background: rgba(255, 255, 255, .05); color: #9ca3af; font-size: 13px; }
+.site-footer .social a:hover { background: rgba(52, 211, 153, .15); color: #34d399; }

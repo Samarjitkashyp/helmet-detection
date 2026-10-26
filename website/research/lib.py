@@ -9,7 +9,7 @@ from html import escape
 BASE = "https://aiaxom.co.in"
 PUBLISHED = "2026-10-26"
 MODIFIED = "2026-10-26"
-ASSET_V = "20261026c"
+ASSET_V = "20261026d"
 SITE = "Axom AI"
 ORG_ID = f"{BASE}/#organization"       # the Organization the main site already declares
 AUTHOR = {"@type": "Person", "name": "Samarjit Kashyap", "url": "https://github.com/Samarjitkashyp",
@@ -169,24 +169,44 @@ def head(p):
         '<link rel="preconnect" href="https://fonts.googleapis.com">', '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>',
         '<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">',
         f'<link rel="stylesheet" href="/research/assets/research.css?v={ASSET_V}">',
+        '<link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" onload="this.onload=null;this.rel=\'stylesheet\'">',
+        '<noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"></noscript>',
     ]
     out += [jsonld(s) for s in schemas]
     out.append("</head>")
     return "\n".join(out)
 
 
+TOOLS_MENU = [
+    ("Axom AI Chat", "Pure Assamese Language Chat", "https://chat.aiaxom.co.in/"),
+    ("QR Code Generator", "QR codes for URLs, text, WiFi, UPI ...", "/tools/qr-code-generator"),
+    ("Generate Image", "Generate your Image for Free", "/tools/ai-image-generator"),
+    ("SVG Editor", "Edit your SVG or Upload SVG", "/tools/svg-editor"),
+    ("PDF Editor", "Free PDF Editor", "/tools/edit-pdf"),
+    ("Youtube Video Downloader", "Download Youtube Video Free", "/tools/youtube-video-downloader"),
+    ("Background Remover", "Remove your Background Free", "/tools/background-remover"),
+    ("Video Compress", "Compress your video for Free", "/tools/video-compressor"),
+    ("Merge PDF", "Merge your pdf for Free", "/tools/merge-pdf"),
+    ("Convert Image", "Convert your Image any type", "/tools/image-format-converter"),
+]
+
+
 def header(current):
-    links = []
+    """Same header as the Axom AI home page: logo, AI Tools menu, the page links and the Sign in button."""
+    menu = "".join(f'<a href="{h}"><b>{e(t)}</b><span>{e(s)}</span></a>' for t, s, h in TOOLS_MENU)
+    chevron = '<svg width="10" height="10" viewBox="0 0 10 10" aria-hidden="true"><path d="M2 3.5 5 6.5 8 3.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+    links = [f'<div class="dd"><a href="/tools" class="dd-toggle" aria-haspopup="true">AI Tools {chevron}</a>'
+             f'<div class="dd-panel">{menu}<a class="dd-all" href="/tools">Launch all tools in Axom AI &rarr;</a></div></div>']
     for name, href in NAV:
-        cur = ' aria-current="page"' if (href == "/research/" and current == "research") else ""
-        links.append(f'<a href="{href}"{cur}>{name}</a>')
+        if name != "AI Tools":
+            links.append(f'<a href="{href}">{name}</a>')
     return f'''<body>
 <a class="skip" href="#main">Skip to content</a>
 <div class="progress" aria-hidden="true"></div>
 <header class="site-header"><div class="wrap bar">
 <a class="brand" href="/"><img src="/axom-browser-logo.png" width="40" height="40" alt="Axom AI logo"><span><b>Axom AI</b><small>SMART &bull; ASSAMESE &bull; AI FOR ALL</small></span></a>
 <button class="menu-btn" type="button" aria-expanded="false" aria-controls="site-nav" aria-label="Open menu">&#9776;</button>
-<nav class="nav" id="site-nav" aria-label="Main">{"".join(links)}<a class="cta-pill" href="https://chat.aiaxom.co.in/">Try Axom AI &rarr;</a></nav>
+<nav class="nav" id="site-nav" aria-label="Main">{"".join(links)}<a class="cta-pill" href="https://chat.aiaxom.co.in/">Sign in &rarr;</a></nav>
 </div></header>'''
 
 
@@ -201,13 +221,14 @@ def crumbs_html(crumbs):
 FOOTER = '''<footer class="site-footer"><div class="wrap">
 <div class="foot-grid">
 <div><a class="brand" href="/"><img src="/axom-browser-logo.png" width="40" height="40" alt="Axom AI logo" loading="lazy"><span><b>Axom AI</b><small>SMART &bull; ASSAMESE &bull; AI FOR ALL</small></span></a>
-<p style="margin-top:14px;max-width:420px">Axom AI is Assam's first indigenous generative artificial intelligence platform, engineered to bridge the linguistic divide for 15 million Assamese speakers with native conversational models, multimodal creative suites, and regional computing infrastructure.</p></div>
+<p style="margin-top:14px;max-width:420px">Axom AI is Assam's first indigenous generative artificial intelligence platform &mdash; engineered to bridge the linguistic divide for 15 million Assamese speakers with native conversational models, multimodal creative suites, and regional computing infrastructure.</p>
+<div class="social"><a href="https://www.facebook.com/profile.php?id=61594094609525" aria-label="Facebook" rel="noopener"><i class="fa-brands fa-facebook"></i></a><a href="https://x.com/" aria-label="X (Twitter)" rel="noopener"><i class="fa-brands fa-x-twitter"></i></a><a href="https://linkedin.com/" aria-label="LinkedIn" rel="noopener"><i class="fa-brands fa-linkedin-in"></i></a><a href="https://youtube.com/" aria-label="YouTube" rel="noopener"><i class="fa-brands fa-youtube"></i></a><a href="https://instagram.com/" aria-label="Instagram" rel="noopener"><i class="fa-brands fa-instagram"></i></a></div></div>
 <div><h4>Product</h4><ul><li><a href="/tools">AI Tools</a></li><li><a href="/pricing">Pricing</a></li><li><a href="/blog">What's New</a></li><li><a href="/use-cases">Use Cases</a></li></ul></div>
-<div><h4>Research</h4><ul><li><a href="/research/">All research</a></li><li><a href="/research/helmet-detection/">Helmet detection</a></li><li><a href="/research/helmet-detection/results/">Results</a></li><li><a href="/research/helmet-detection/model-card/">Model card</a></li></ul></div>
+<div><h4>Solutions</h4><ul><li><a href="/use-cases">For Students</a></li><li><a href="/use-cases">For Businesses</a></li><li><a href="/use-cases">For Educators</a></li><li><a href="/use-cases">For Developers</a></li></ul></div>
 <div><h4>Resources</h4><ul><li><a href="/blog">Blog &amp; Insights</a></li><li><a href="/faq">Frequently Asked Questions</a></li><li><a href="https://user.aiaxom.co.in/support/">Help &amp; Support</a></li><li><a href="https://chat.aiaxom.co.in/tools">AI Tools Directory</a></li></ul></div>
 <div><h4>Company</h4><ul><li><a href="/about">About Axom AI</a></li><li><a href="/privacy">Privacy Policy</a></li><li><a href="/terms">Terms of Service</a></li><li><a href="/contact">Contact Us</a></li></ul></div>
 </div>
-<div class="foot-bottom"><span>&copy; 2026 Axom AI. All rights reserved.</span><span><a href="/privacy">Privacy Policy</a> &middot; <a href="/terms">Terms of Service</a> &middot; <a href="/cookie-policy">Cookie Policy</a></span><span>Made with &hearts; in Assam, India</span></div>
+<div class="foot-bottom"><span>&copy; 2026 Axom AI. All rights reserved.</span><span><a href="/privacy">Privacy Policy</a> &middot; <a href="/terms">Terms of Service</a> &middot; <a href="/cookie-policy">Cookie Policy</a> &middot; <a href="mailto:samarjitkashyp@gmail.com">Support</a></span><span>Made with <span style="color:#ef4444">&hearts;</span> in Assam, India</span></div>
 </div></footer>
 <script src="/research/assets/research.js?v=''' + ASSET_V + '''" defer></script>
 </body></html>'''

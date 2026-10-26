@@ -46,33 +46,6 @@ def hub():
               "An end-to-end system: YOLOv8 detection, per-rider tracking, an Android app, an admin dashboard and live CCTV alerts. Recall on held-out CCTV frames rose from 0.62 to 0.79 after fine-tuning; the live worker caught about 90% of bare-headed riders at two analysed frames per second.",
               "/research/assets/detection-junction.jpg", "Traffic junction where an AI model marks each rider with a red box for no helmet or a green box for helmet; faces are pixelated",
               9, "Oct 26, 2026")}
-
-<p class="section-label"><span>In this report</span><span>Helmet detection, in depth</span></p>
-<div class="s-grid">
-{story_card(HD + "how-it-works/", "Explained", "How helmet detection works, from A to Z", "Every step of the pipeline, every tool we used, and the reasons behind each choice, including the ones that did not work.", "/research/assets/card-how.jpg", "Riders on a street marked with red boxes for no helmet; faces are pixelated", 9, "Oct 26, 2026")}
-{story_card(HD + "results/", "Results", "Helmet detection results: what we measured", "Precision, recall and mAP on held-out CCTV frames, live results at one and two frames per second, CPU speed, night tests and the mistakes we made.", "/research/assets/card-results.jpg", "Bar chart of recall before and after CCTV fine-tuning and riders alerted at one and two frames per second", 7, "Oct 26, 2026")}
-{story_card(HD + "cctv-monitoring/", "Live monitoring", "CCTV helmet detection: alerts within seconds", "Connect an RTSP camera and get a photo of every rider without a helmet on Telegram, in the dashboard and in the app.", "/research/assets/card-cctv.jpg", "Busy junction with riders marked for helmet and no helmet; faces are pixelated", 4, "Oct 26, 2026")}
-{story_card(HD + "model-card/", "Reference", "Helmet detection model card", "What the model is, what it was trained on, what it should and should not be used for, and its licences.", "/research/assets/card-model.jpg", "Model card summary: YOLOv8s, helmet and no_helmet classes", 4, "Oct 26, 2026")}
-{story_card(HD + "faq/", "FAQ", "Helmet detection: questions and answers", "Short answers on accuracy, night, GPU, caps and turbans, privacy, open source and how to try it.", "/research/assets/card-faq.jpg", "Question mark graphic for the helmet detection FAQ", 8, "Oct 26, 2026")}
-</div>
-</section>
-
-<section class="wrap"><h2>How we publish</h2>
-<div class="cards">
-<div class="card"><h3>Numbers you can check</h3><p>Results come from clips the model never trained on, and we say how they were measured.</p></div>
-<div class="card"><h3>Limits next to results</h3><p>Night, distance, speed and bias are written beside the good news, not hidden at the end.</p></div>
-<div class="card"><h3>Credit where it is due</h3><p>Every dataset, model and tool is named with its licence.</p></div>
-<div class="card"><h3>Open code</h3><p>Our code is on GitHub so others can repeat and improve the work.</p></div>
-<div class="card"><h3>Updated, never erased</h3><p>Corrections and new results go in with a date. Wrong early findings stay visible, marked as wrong.</p></div>
-</div></section>
-
-<section class="wrap"><h2>Where this work runs today</h2>
-<div class="cards">
-<a class="card" href="{HD}"><span class="tag">Research</span><h3>Helmet detection</h3><p>Phone videos and CCTV streams, with alerts on Telegram and in the app.</p></a>
-<a class="card" href="https://chat.aiaxom.co.in/"><span class="tag amber">Platform</span><h3>Axom AI Chat</h3><p>Chat in native Assamese with the Axom AI assistant.</p></a>
-<a class="card" href="/tools"><span class="tag amber">Platform</span><h3>Axom AI Tools</h3><p>Image, PDF, video and QR tools, free to use.</p></a>
-</div>
-<p>More reports will be added to this page as they are published. For collaboration or questions, use the <a href="/contact">contact page</a>.</p>
 </section>'''
     return p, body
 
