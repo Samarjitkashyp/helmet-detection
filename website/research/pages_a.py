@@ -203,13 +203,6 @@ def overview():
 {faq_html}
 <p><a href="{url}faq/">More questions and answers &rarr;</a></p>
 
-<h2>Keep reading</h2>
-{related([
-    ("How it works, A to Z", url + "how-it-works/", "Explained", "Every step, every tool, and why we chose it."),
-    ("Results and benchmarks", url + "results/", "Numbers", "Accuracy, speed, night tests and what went wrong."),
-    ("CCTV monitoring", url + "cctv-monitoring/", "Live", "Connect a camera and get alerts on Telegram and in the app."),
-    ("Model card", url + "model-card/", "Reference", "Intended use, data, limits and licences."),
-])}
 </div></div>
 <section class="wrap"><div class="cta-band"><div><p class="cta-h">See it on your own footage</p><p>Open the Android app and analyse a video, or read the code and run the CCTV worker on your own camera.</p></div>
 <div class="cta"><a class="btn primary" href="{APP_PAGE}">Try the Android app</a><a class="btn" href="{GITHUB_BACKEND}">View code on GitHub</a></div></div></section>
