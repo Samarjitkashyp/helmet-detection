@@ -11,7 +11,7 @@ from chrome import footer, header  # noqa: E402
 BASE = "https://aiaxom.co.in"
 PUBLISHED = "2026-10-26"
 MODIFIED = "2026-10-26"
-ASSET_V = "20261026e"
+ASSET_V = "20261026f"
 SITE = "Axom AI"
 ORG_ID = f"{BASE}/#organization"       # the Organization the main site already declares
 AUTHOR = {"@type": "Person", "name": "Samarjit Kashyap", "url": "https://github.com/Samarjitkashyp",

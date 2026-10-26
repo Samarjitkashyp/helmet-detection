@@ -1,9 +1,27 @@
 """Hub page, helmet-detection overview and the A-to-Z "how it works" page."""
 from diagram import PIPELINE_SVG
 from lib import (APP_PAGE, BASE, GITHUB_APP, GITHUB_BACKEND, MODIFIED, WHO_URL, article_schema, e, faq_schema,
-                 feature_card, hero, meta_line, related, stat, story_card)
+                 feature_card, hero, meta_line, related, small, stat, story_card)
 
 HD = "/research/helmet-detection/"
+
+
+def icon_cards(items, cls="cards"):
+    """Grid of cards with a round icon: items = (icon, title, html text)."""
+    return f'<div class="{cls}">' + "".join(
+        f'<div class="card ic"><span class="ic-ico">{small(i, 22)}</span><h3>{t}</h3><p>{d}</p></div>' for i, t, d in items) + "</div>"
+
+
+def cmp_bar(label, pct, value, before):
+    return (f'<div class="cmp-row"><span>{label}</span><div class="bar-track"><div class="bar-fill{" warn" if before else ""}" style="width:{pct}%"></div></div>'
+            f'<b>{value}</b></div>')
+
+
+def link_cards(items):
+    """Grid of link cards: items = (icon, title, text, href, link label)."""
+    return '<div class="cards">' + "".join(
+        f'<a class="card ic lk" href="{h}"><span class="ic-ico">{small(i, 22)}</span><h3>{t}</h3><p>{d}</p><span class="go">{l} &rarr;</span></a>'
+        for i, t, d, h, l in items) + "</div>"
 WHO_TEXT = ("WHO reports that head trauma is the leading cause of death for motorcycle riders, and that safe, quality helmets "
             "reduce the risk of death by more than six times and the risk of brain injury by up to 74%.")
 
@@ -72,6 +90,8 @@ def overview():
          "author": {"@type": "Person", "name": "Samarjit Kashyap"}},
         faq_schema(OVERVIEW_FAQ)]
     faq_html = "".join(f"<details><summary>{e(q)}</summary><p>{e(a)}</p></details>" for q, a in OVERVIEW_FAQ)
+    cctv_text = ("A worker reads the RTSP stream of a camera, tracks every rider separately and raises one alert per person without a helmet. See "
+                 + f'<a href="{url}cctv-monitoring/">CCTV monitoring</a>.')
     body = f'''
 <article>
 {hero("Official Axom AI Research · Road Safety",
@@ -80,16 +100,21 @@ def overview():
       chips=[("shield", "Road safety"), ("camera", "CCTV cameras"), ("phone", "Android app"), ("bolt", "Telegram alerts"), ("cpu", "No GPU needed"), ("code", "Open source")],
       cta=f'<a class="btn primary" href="{url}results/">See the results</a><a class="btn" href="{GITHUB_BACKEND}">View code on GitHub</a><a class="btn" href="{APP_PAGE}">Try the Android app</a>')}
 
-<div class="wrap"><div class="read" style="margin:0">
-<div class="answer"><h2>Quick answer</h2>
-<p><strong>Helmet detection is computer vision that finds motorcycle riders and decides, person by person, whether a helmet is worn.</strong> Axom AI's system does this on uploaded videos and on live CCTV streams. On traffic-camera footage it had never seen, it caught about 74% of bare-headed riders when analysing one frame per second and about 90% at two frames per second, with about 1% of alerts on fully helmeted bikes. It runs on a normal CPU, with no GPU.</p></div>
-
+<section class="wrap showcase">
+<figure class="show-fig"><img src="/research/assets/detection-junction.jpg" width="1280" height="720" alt="Busy junction where each rider on several motorcycles gets their own red or green box; faces are pixelated" fetchpriority="high">
+<span class="legend"><i class="r"></i>No helmet<i class="g"></i>Helmet</span>
+<figcaption>Every rider gets their own verdict. Held-out frame from the public HELMET dataset (CC BY 4.0), faces pixelated.</figcaption></figure>
 <div class="stats" role="list">
 {stat("target", "0.79", "recall on held-out CCTV frames after fine-tuning (was 0.62)")}
 {stat("users", "~90%", "of bare-headed riders alerted at 2 analysed frames per second")}
 {stat("shield", "~1%", "of alerts on fully helmeted bikes (false alarms)")}
 {stat("bolt", "1.4 fps", "analysed on a desktop Intel Core i3 CPU, no GPU")}
 </div>
+</section>
+
+<div class="wrap"><div class="read" style="margin:0">
+<div class="answer"><h2>Quick answer</h2>
+<p><strong>Helmet detection is computer vision that finds motorcycle riders and decides, person by person, whether a helmet is worn.</strong> Axom AI's system does this on uploaded videos and on live CCTV streams. On traffic-camera footage it had never seen, it caught about 74% of bare-headed riders when analysing one frame per second and about 90% at two frames per second, with about 1% of alerts on fully helmeted bikes. It runs on a normal CPU, with no GPU.</p></div>
 
 <nav class="toc" aria-label="On this page"><b>On this page</b><ol>
 <li><a href="#why">Why helmet detection matters</a></li><li><a href="#built">What Axom AI built</a></li>
@@ -103,19 +128,18 @@ def overview():
 <p>Cameras already watch many junctions and highways. An AI model can read those streams all day, point at the riders without a helmet, and hand a human a photo to review. That is the idea behind this work: <strong>use the cameras that exist, and let people spend their time on the cases that matter.</strong></p>
 
 <h2 id="built">What Axom AI built</h2>
-<ul>
-<li><strong>Video analysis.</strong> Record or upload a clip in the Android app. The server finds every person, gives each one a single verdict and returns a photo with the time it was seen.</li>
-<li><strong>Live CCTV monitoring.</strong> A worker reads a camera's RTSP stream, tracks every rider separately and raises one alert per person without a helmet. See <a href="{url}cctv-monitoring/">CCTV monitoring</a>.</li>
-<li><strong>Admin dashboard.</strong> Statistics, violation review, false-positive marking, camera management and a CCTV events page.</li>
-<li><strong>Alerts where people already look.</strong> Telegram, the dashboard and an Alerts tab in the app, plus a warning when the monitor itself stops.</li>
-<li><strong>A retraining loop.</strong> Reviewers flag wrong detections; those frames become training data for the next version.</li>
-</ul>
+{icon_cards([
+    ("phone", "Video analysis", "Record or upload a clip in the Android app. The server finds every person, gives each one a single verdict and returns a photo with the time it was seen."),
+    ("camera", "Live CCTV monitoring", cctv_text),
+    ("chart", "Admin dashboard", "Statistics, violation review, false-positive marking, camera management and a CCTV events page."),
+    ("bolt", "Alerts where people look", "Telegram, the dashboard and an Alerts tab in the app, plus a warning when the monitor itself stops."),
+    ("sparkle", "A retraining loop", "Reviewers flag wrong detections; those frames become training data for the next version."),
+])}
 
 <h2 id="see">See it work</h2>
 <figure><img src="/research/assets/detection-street.jpg" width="1280" height="720" alt="Street scene where an AI model marks three motorcycle riders without helmets with red boxes; faces are pixelated" loading="lazy">
 <figcaption>Held-out frame from the public HELMET dataset (Myanmar traffic cameras, CC BY 4.0). Red = no helmet, green = helmet. Faces are pixelated here; the live system saves the original frame as evidence for the administrator only.</figcaption></figure>
-<figure><img src="/research/assets/detection-junction.jpg" width="1280" height="720" alt="Busy junction where each rider on several motorcycles gets their own red or green box; faces are pixelated" loading="lazy">
-<figcaption>A busy junction: every rider gets their own verdict, so a bike with two people gives two results, not one.</figcaption></figure>
+<p>On a busy junction every rider gets their own verdict, so a bike with two people gives two results, not one (see the picture at the top of this page).</p>
 
 <h2 id="steps">How it works in eight steps</h2>
 <ol class="flow">
@@ -142,24 +166,29 @@ def overview():
 <thead><tr><th>Model</th><th class="num">Precision</th><th class="num">Recall</th><th class="num">mAP@50</th></tr></thead>
 <tbody><tr><td>Before CCTV fine-tuning</td><td class="num">0.777</td><td class="num">0.617</td><td class="num">0.547</td></tr>
 <tr><td><strong>After CCTV fine-tuning</strong></td><td class="num good">0.798</td><td class="num good">0.791</td><td class="num good">0.748</td></tr></tbody></table></div>
+<div class="compare" role="img" aria-label="Recall on held-out CCTV frames rose from 0.62 to 0.79 after fine-tuning">
+<p class="cmp-title">Recall on held-out CCTV frames</p>
+{cmp_bar("Before fine-tuning", 61.7, "0.62", True)}
+{cmp_bar("After fine-tuning", 79.1, "0.79", False)}
+</div>
 <p>The live worker adds tracking and alert logic on top of the model. All numbers, how they were measured and what went wrong along the way are on the <a href="{url}results/">results page</a>.</p>
 
 <h2 id="limits">Honest limits</h2>
-<ul>
-<li><strong>Night.</strong> The training data is daytime. On the same frames made to look like night, recall fell from 0.76 to 0.34. Night-style training images are prepared but the model has not been trained on them yet, and real night footage is still needed.</li>
-<li><strong>Distance.</strong> Heads that are only a few pixels wide are missed. Enlarged crops help; they cost speed.</li>
-<li><strong>Speed decides recall.</strong> The more frames analysed per second, the more riders are caught. A desktop CPU manages about 1.4.</li>
-<li><strong>Your camera is not ours.</strong> Our test footage is from Myanmar traffic cameras. Angle, light and clothing at your site will differ, and results will too.</li>
-<li><strong>A screening tool, not a judge.</strong> A person should review an alert before any action is taken against anyone.</li>
-</ul>
+{icon_cards([
+    ("moon", "Night", "The training data is daytime. On the same frames made to look like night, recall fell from 0.76 to 0.34. Night-style training images are prepared but the model has not been trained on them yet, and real night footage is still needed."),
+    ("target", "Distance", "Heads that are only a few pixels wide are missed. Enlarged crops help; they cost speed."),
+    ("bolt", "Speed decides recall", "The more frames analysed per second, the more riders are caught. A desktop CPU manages about 1.4."),
+    ("camera", "Your camera is not ours", "Our test footage is from Myanmar traffic cameras. Angle, light and clothing at your site will differ, and results will too."),
+    ("shield", "A screening tool, not a judge", "A person should review an alert before any action is taken against anyone."),
+], "cards warn-cards")}
 
 <h2 id="open">Open source and links</h2>
-<ul>
-<li>Backend, CCTV worker and training tools: <a href="{GITHUB_BACKEND}">github.com/Samarjitkashyp/helmet-detection</a> (MIT)</li>
-<li>Android app (Flutter): <a href="{GITHUB_APP}">github.com/Samarjitkashyp/helmet-detection-mobile-app</a> (MIT)</li>
-<li>Download the Android app: <a href="{APP_PAGE}">helmet-detection.aiaxom.co.in/app</a></li>
-<li>Details of the model: <a href="{url}model-card/">model card</a></li>
-</ul>
+{link_cards([
+    ("code", "Backend and CCTV worker", "Server, CCTV worker and training tools. MIT licence.", GITHUB_BACKEND, "github.com/Samarjitkashyp/helmet-detection"),
+    ("phone", "Android app (Flutter)", "The app that records, uploads and shows alerts. MIT licence.", GITHUB_APP, "View on GitHub"),
+    ("bolt", "Download the app", "Install the Android app and try it on your own video.", APP_PAGE, "Open the app page"),
+    ("book", "Model card", "Intended use, data, limits and licences of the model.", url + "model-card/", "Read the model card"),
+])}
 
 <h2 id="cite">Cite this work</h2>
 <pre><code>@techreport{{axomai2026helmet,
@@ -182,6 +211,8 @@ def overview():
     ("Model card", url + "model-card/", "Reference", "Intended use, data, limits and licences."),
 ])}
 </div></div>
+<section class="wrap"><div class="cta-band"><div><p class="cta-h">See it on your own footage</p><p>Open the Android app and analyse a video, or read the code and run the CCTV worker on your own camera.</p></div>
+<div class="cta"><a class="btn primary" href="{APP_PAGE}">Try the Android app</a><a class="btn" href="{GITHUB_BACKEND}">View code on GitHub</a></div></div></section>
 </article>'''
     return p, body
 
