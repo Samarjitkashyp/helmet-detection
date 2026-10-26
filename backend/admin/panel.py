@@ -1,6 +1,7 @@
 """Custom admin dashboard (Jinja2 + HTMX + Chart.js) served under /panel."""
 import csv
 import io
+import re
 import uuid
 import zipfile
 from datetime import datetime, timedelta
@@ -20,7 +21,7 @@ from core.ratelimit import client_ip, login_limiter
 from core.security import verify_password
 from db.crud import load_settings
 from db.database import get_db
-from db.models import Detection, Setting, User, Video
+from db.models import Camera, CctvEvent, Detection, Setting, User, Video
 from services import app_release
 from services.video_processor import raw_path
 
@@ -139,6 +140,90 @@ def toggle_fp(det_id: int, request: Request, admin: User = Depends(current_admin
     det.is_false_positive = not det.is_false_positive
     db.commit()
     return render(request, "_violation_row.html", admin, d=det)
+
+
+# ---------- CCTV cameras and events ----------
+def mask_url(url: str) -> str:
+    """rtsp://user:pass@host/path -> rtsp://user:***@host/path (the page never shows a camera password)."""
+    return re.sub(r"(://[^:/@]+:)[^@/]*@", r"\1***@", url)
+
+
+templates.env.filters["mask_url"] = mask_url
+
+
+@router.get("/cameras", response_class=HTMLResponse)
+def cameras(request: Request, error: str = "", admin: User = Depends(current_admin), db: Session = Depends(get_db)):
+    items = db.scalars(select(Camera).order_by(Camera.id)).all()
+    counts = dict(db.execute(select(CctvEvent.camera_id, func.count(CctvEvent.id))
+                             .where(CctvEvent.is_false_positive.is_(False)).group_by(CctvEvent.camera_id)).all())
+    return render(request, "cameras.html", admin, active="cameras", items=items, counts=counts, error=error)
+
+
+@router.post("/cameras")
+def camera_add(name: str = Form(...), rtsp_url: str = Form(...), admin: User = Depends(current_admin),
+               db: Session = Depends(get_db)):
+    name, rtsp_url = name.strip(), rtsp_url.strip()
+    if not name or len(name) > 100 or not rtsp_url.lower().startswith(("rtsp://", "rtsps://")):
+        return RedirectResponse("/panel/cameras?error=" + quote("Give a name and an rtsp:// address."), status_code=303)
+    db.add(Camera(name=name, rtsp_url=rtsp_url))
+    db.commit()
+    return RedirectResponse("/panel/cameras", status_code=303)
+
+
+@router.post("/cameras/{cam_id}/toggle")
+def camera_toggle(cam_id: int, admin: User = Depends(current_admin), db: Session = Depends(get_db)):
+    cam = db.get(Camera, cam_id)
+    if not cam:
+        raise HTTPException(404)
+    cam.is_active = not cam.is_active
+    db.commit()
+    return RedirectResponse("/panel/cameras", status_code=303)
+
+
+@router.post("/cameras/{cam_id}/delete")
+def camera_delete(cam_id: int, admin: User = Depends(current_admin), db: Session = Depends(get_db)):
+    cam = db.get(Camera, cam_id)
+    if cam:
+        db.delete(cam)   # its events stay (camera_id becomes empty, camera_name is kept)
+        db.commit()
+    return RedirectResponse("/panel/cameras", status_code=303)
+
+
+@router.get("/events", response_class=HTMLResponse)
+def events(request: Request, camera_id: int | None = None, fp: str = "no", page: int = 1,
+           admin: User = Depends(current_admin), db: Session = Depends(get_db)):
+    q = select(CctvEvent)
+    if camera_id:
+        q = q.where(CctvEvent.camera_id == camera_id)
+    if fp == "yes":
+        q = q.where(CctvEvent.is_false_positive.is_(True))
+    elif fp == "no":
+        q = q.where(CctvEvent.is_false_positive.is_(False))
+    total = db.scalar(select(func.count()).select_from(q.order_by(None).subquery()))
+    items = db.scalars(q.order_by(CctvEvent.id.desc()).offset((page - 1) * PAGE_SIZE).limit(PAGE_SIZE)).all()
+    cams = db.scalars(select(Camera).order_by(Camera.name)).all()
+    return render(request, "events.html", admin, active="events", items=items, total=total, page=page,
+                  pages=max(1, -(-total // PAGE_SIZE)), camera_id=camera_id, fp=fp, cams=cams)
+
+
+@router.post("/events/{event_id}/toggle-fp", response_class=HTMLResponse)
+def event_toggle_fp(event_id: int, request: Request, admin: User = Depends(current_admin),
+                    db: Session = Depends(get_db)):
+    ev = db.get(CctvEvent, event_id)
+    if not ev:
+        raise HTTPException(404)
+    ev.is_false_positive = not ev.is_false_positive
+    db.commit()
+    return render(request, "_event_row.html", admin, e=ev)
+
+
+@router.get("/cctv-media/{name}")
+def cctv_media(name: str, admin: User = Depends(current_admin)):
+    root = (config.STORAGE_DIR / "cctv").resolve()
+    target = (root / name).resolve()
+    if target.parent != root or not target.is_file():
+        raise HTTPException(404)
+    return FileResponse(target)
 
 
 # ---------- users ----------

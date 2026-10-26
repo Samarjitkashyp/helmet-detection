@@ -19,6 +19,7 @@ AI-powered helmet compliance checking. Record or upload a short video, and the s
 - **Retraining loop** – export reviewed frames as a YOLO dataset and fine-tune on Colab.
 - **App distribution** – upload the Android APK from the dashboard (Settings → Mobile app) with a live progress bar, then publish it; a "Download app" button appears in the dashboard and users install from the public `/app` page.
 - **Production-ready backend** – JWT auth, role-based access, login rate limiting, optional admin IP allow-list, systemd/nginx deployment kit.
+- **CCTV monitoring** – a worker reads a camera's RTSP stream, tracks every rider on its own and raises one alert per person without a helmet: photo, Telegram message, dashboard event, and an Alerts tab in the app. See [CCTV monitoring](#cctv-monitoring).
 - **Quality hints** – warns when a video is too dark or the model is unsure.
 - **Live preview model** – the server hands the mobile app an ONNX build of the model (`/app/live-model`) so the app can draw helmet / no-helmet boxes on the camera preview while framing a shot. A retrained model reaches phones without a new app release.
 
@@ -38,9 +39,41 @@ flowchart LR
 2. A background worker samples every *N*th frame, runs YOLOv8, tracks people across frames, and picks one verdict per person.
 3. Results (label, confidence, timestamp, photos) are stored and served to the app and the dashboard.
 
+## CCTV monitoring
+
+```mermaid
+flowchart LR
+    CAM[IP camera<br/>RTSP] --> W[CCTV worker<br/>PC near the camera]
+    W -->|photo + heartbeat<br/>X-Worker-Key| S[FastAPI server]
+    S --> T[Telegram]
+    S --> D[Dashboard<br/>Cameras / CCTV events]
+    S --> M[App: Alerts tab]
+    S -.->|no heartbeat| T
+```
+
+The heavy model work runs in `services/cctv_worker.py` on a PC next to the camera; the server only stores events and sends messages, so a small shared server is enough. The worker sends a heartbeat every minute and the server warns on Telegram when it stops (PC off, camera stream down).
+
+Per frame the worker finds motorcycles (a COCO YOLOv8s model), looks for heads on the whole frame and, on every 5th frame, on an enlarged crop around each motorcycle; a small crop classifier double-checks helmet / no helmet; only heads sitting on a motorcycle count (pedestrians and cyclists have no helmet rule). Every head is tracked separately, so a frame with several helmeted and bare-headed riders gives one verdict per person.
+
+```bash
+# server .env: CCTV_WORKER_KEY, TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID    (add the camera in the dashboard: Cameras)
+# PC backend/.env: CCTV_SERVER_URL, CCTV_WORKER_KEY
+python -m services.cctv_worker --camera-id 1                  # run by hand
+.\deploy\pc\install_autostart.ps1 -CameraId 1                 # or start at every login (add -TestStream for a fake looped camera)
+```
+
+**Measured** on the [HELMET dataset](https://osf.io/4pwj8/) (Myanmar traffic cameras, clips the model never saw during training), 12 of the busiest test clips with 170 bare-headed riders:
+
+| Analysed frames per second | Riders that got an alert | Alerts on fully helmeted bikes |
+|---|---|---|
+| 1 | about 74 % | about 1 % |
+| 2 | about 90 % | about 1 % |
+
+A desktop i3 CPU analyses about 1.4 frames per second with the defaults; a faster CPU or a GPU raises the share of riders caught. On held-out CCTV frames, fine-tuning on this dataset (`training/finetune_cctv_colab.ipynb`) lifted recall from 0.62 to 0.79 and mAP@50 from 0.55 to 0.75. Night footage is not covered by real data yet; `training/make_night_data.py` makes dark, infrared-style copies of daytime frames as a stand-in (before training on them, recall was 0.76 in daylight and 0.34 on the same frames made dark).
+
 ## Model performance
 
-YOLOv8s fine-tuned at 640 px on ~11.7k training images from seven public datasets (see [Credits](#datasets--credits)). Held-out test images, confidence threshold 0.4:
+The weights in `backend/models/best.pt` are the CCTV fine-tune of the model described here. The table below is the original model, YOLOv8s fine-tuned at 640 px on ~11.7k training images from seven public datasets (see [Credits](#datasets--credits)). Held-out test images, confidence threshold 0.4:
 
 | Test set | Class | Precision | Recall |
 |---|---|---|---|
@@ -75,13 +108,14 @@ backend/
   config.py            environment-driven settings
   api/                 auth and video endpoints
   admin/               dashboard (Jinja2/HTMX) and SQLAdmin data editor
-  services/            video processing (YOLO + tracking)
+  services/            video processing (YOLO + tracking), cctv_worker.py, Telegram / push / heartbeat watchdog
   core/                security, rate limiting, dependencies
   db/                  models and session
   scripts/             create_admin.py, seed_demo.py
   models/best.pt       trained weights
 deploy/                nginx, systemd, setup/update/backup scripts, README_DEPLOY.md
-training/              dataset merge, Colab notebook, model comparison
+deploy/pc/             CCTV worker auto-start for Windows (Task Scheduler)
+training/              dataset merge, Colab notebooks, model comparison, CCTV evaluation and fine-tuning tools (FINETUNE_STEPS.md)
 ```
 
 ## Quick start (local)
@@ -144,6 +178,8 @@ python training/export_onnx.py 416           # build backend/models/live.onnx fo
 python training/eval_onnx.py                 # check the ONNX model against the PyTorch one
 ```
 
+CCTV tools: `training/osf_fetch.py` (fast resumable download of the HELMET dataset), `eval_pipeline.py` / `eval_persons.py` / `eval_replay.py` (score the worker's logic against the per-motorcycle ground truth), `mine_head_crops.py` + `train_head_cls.py` (crop classifier), `build_finetune_zip.py` + `finetune_cctv_colab.ipynb` (detector fine-tune, steps in `training/FINETUNE_STEPS.md`).
+
 `live.onnx` is generated (about 45 MB, git-ignored): run the export after every retraining and redeploy.
 
 Fine-tune with `training/train_colab.ipynb` (free Colab GPU). In production, flag wrong detections in the dashboard and use **Export → Retrain set** to collect corrected frames for the next training round.
@@ -158,7 +194,7 @@ JWT auth with role checks, bcrypt password hashing, login rate limiting, secure 
 
 ## Limitations
 
-- Accuracy drops in darkness, at long range, and with heavily occluded heads.
+- Accuracy drops in darkness, at long range, and with heavily occluded heads. CCTV alerts catch about three in four bare-headed riders at one analysed frame per second on a desktop CPU; real night footage is not in the training data yet.
 - Turbans (pagdi) are not yet covered by the training data.
 - Counts are **sightings**, not unique people: tracking follows a person while they stay in view, but the same person who leaves and re-enters (for example after a camera cut in an edited clip) is counted again. Tracker tuning (ByteTrack vs BoT-SORT, frame skip, buffer) did not change this; unifying identities across shots would need a person re-identification model.
 - Processing is CPU-bound: about one minute of video per several minutes of compute on a small server.
@@ -177,6 +213,8 @@ Trained on public Roboflow Universe datasets. Thanks to their authors:
 | [Cap](https://universe.roboflow.com/ny/cap-ghxtg) | CC BY 4.0 |
 | [Hats and masks](https://universe.roboflow.com/krrrz/hats-and-masks) | CC BY 4.0 |
 | [Head Accessories](https://universe.roboflow.com/theyearoflinux/head-accessories-9xdyg) | MIT |
+
+The CCTV fine-tune also uses the [HELMET dataset](https://osf.io/4pwj8/) of Myanmar traffic-camera clips (CC BY 4.0). Please credit its authors if you reuse the models or the derived labels. Motorcycle detection uses the COCO-pretrained YOLOv8s from Ultralytics.
 
 Built with [Ultralytics YOLOv8](https://github.com/ultralytics/ultralytics) (AGPL-3.0). Check its license terms before commercial use.
 

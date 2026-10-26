@@ -14,3 +14,4 @@ pyjwt
 itsdangerous
 email-validator
 greenlet
+google-auth   # only used for push notifications (FCM); optional

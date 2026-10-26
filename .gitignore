@@ -1,4 +1,4 @@
-# secrets and local config
+﻿# secrets and local config
 .env
 *.pem
 *.key
@@ -43,3 +43,22 @@ Thumbs.db
 
 # published Android app (uploaded from the admin panel)
 backend/storage/app/*
+
+# Myanmar HELMET dataset (CC BY 4.0), downloaded for stream tests, not committed
+data_helmet_myanmar/
+
+# local helper binaries (MediaMTX, FFmpeg) for stream tests
+tools/
+
+backend/models/coco_yolov8s.pt
+
+training/_exp/
+
+# CCTV runtime data and local model backups
+backend/storage/cctv/
+backend/models/backup/
+*.crt
+*.key
+helmet_bundle.zip
+helmet_finetune_*.zip
+

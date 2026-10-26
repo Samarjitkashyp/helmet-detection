@@ -7,7 +7,7 @@ $stage = Join-Path $env:TEMP ("helmet_bundle_" + [guid]::NewGuid().ToString("N")
 $zip = Join-Path $root "helmet_bundle.zip"
 
 New-Item -ItemType Directory -Path "$stage\backend", "$stage\deploy" | Out-Null
-robocopy "$root\backend" "$stage\backend" /E /XD __pycache__ storage /XF .env best_v1.pt *.pyc /NFL /NDL /NJH /NJS /NP | Out-Null
+robocopy "$root\backend" "$stage\backend" /E /XD __pycache__ storage backup /XF .env best_v1.pt coco_yolov8s.pt *.pyc /NFL /NDL /NJH /NJS /NP | Out-Null
 if ($LASTEXITCODE -ge 8) { throw "robocopy failed ($LASTEXITCODE)" }
 Copy-Item "$root\deploy\*" "$stage\deploy" -Exclude "make_bundle.ps1"
 

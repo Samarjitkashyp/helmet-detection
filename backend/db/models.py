@@ -67,6 +67,48 @@ class Detection(Base):
         return f"#{self.id} {self.label}"
 
 
+class Camera(Base):
+    __tablename__ = "cameras"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    name: Mapped[str] = mapped_column(String(100))
+    rtsp_url: Mapped[str] = mapped_column(Text)   # may contain camera credentials: admin-only, never shown in full
+    is_active: Mapped[bool] = mapped_column(Boolean, default=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
+
+    def __str__(self):
+        return self.name
+
+
+class CctvEvent(Base):
+    __tablename__ = "cctv_events"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    camera_id: Mapped[int | None] = mapped_column(ForeignKey("cameras.id", ondelete="SET NULL"), nullable=True, index=True)
+    camera_name: Mapped[str] = mapped_column(String(100))
+    track_id: Mapped[int] = mapped_column(Integer)
+    confidence: Mapped[float] = mapped_column(Float)
+    photo: Mapped[str | None] = mapped_column(String(200), nullable=True)   # file name inside storage/cctv
+    telegram_sent: Mapped[bool] = mapped_column(Boolean, default=False)
+    is_false_positive: Mapped[bool] = mapped_column(Boolean, default=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now(), index=True)
+
+    camera: Mapped[Camera | None] = relationship()
+
+    def __str__(self):
+        return f"#{self.id} {self.camera_name}"
+
+
+class PushDevice(Base):
+    """A phone that asked for push notifications about CCTV events (FCM registration token)."""
+    __tablename__ = "push_devices"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), index=True)
+    token: Mapped[str] = mapped_column(String(300), unique=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
+
+
 class Setting(Base):
     __tablename__ = "settings"
 

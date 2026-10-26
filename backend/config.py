@@ -25,6 +25,16 @@ ADMIN_ALLOWED_IPS = [ip.strip() for ip in os.getenv("ADMIN_ALLOWED_IPS", "").spl
 KEEP_ORIGINAL_VIDEOS = _flag("KEEP_ORIGINAL_VIDEOS", True)   # false = delete the upload once analysed (saves disk)
 MAX_UPLOAD_MB = int(os.getenv("MAX_UPLOAD_MB", "300"))       # behind Cloudflare's proxy keep this under 100
 
+# CCTV monitoring: a worker (on a PC near the camera) reports to this server with a shared key
+CCTV_WORKER_KEY = os.getenv("CCTV_WORKER_KEY", "").strip()         # empty = the /api/cctv endpoints are disabled
+CCTV_OFFLINE_MINUTES = int(os.getenv("CCTV_OFFLINE_MINUTES", "5"))  # no heartbeat for this long -> Telegram alert
+TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN", "").strip()
+TELEGRAM_CHAT_ID = os.getenv("TELEGRAM_CHAT_ID", "").strip()
+
+# Push notifications to the phone app (Firebase Cloud Messaging). Both empty = push is off, Telegram still works.
+FCM_PROJECT_ID = os.getenv("FCM_PROJECT_ID", "").strip()
+FCM_SERVICE_ACCOUNT_FILE = os.getenv("FCM_SERVICE_ACCOUNT_FILE", "").strip()   # path to the service-account JSON on the server
+
 STORAGE_DIR = BASE_DIR / "storage"
 UPLOAD_DIR = STORAGE_DIR / "uploads"
 RESULTS_DIR = STORAGE_DIR / "results"

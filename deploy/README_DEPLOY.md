@@ -121,3 +121,18 @@ sudo bash helmet_bundle/deploy/update.sh
 ## Ek zaroori baat (database badlav)
 
 Abhi tables `create_all` se banti hain, jo **naye column** nahi jodta. Aage agar tables badalni padein, toh Alembic migration chahiye hogi. Bataiye, tab main migrations set kar dunga.
+
+## CCTV monitoring (worker on a PC, alerts to Telegram and the app)
+
+- **Server**: `.env` mein `CCTV_WORKER_KEY` (lamba random string), `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID` jodein. Admin panel > Cameras mein camera add karein.
+- **PC (camera ke paas)**: `backend/.env` mein wahi `CCTV_WORKER_KEY` aur `CCTV_SERVER_URL=https://<aapka-server>`. Phir `deploy/pc/install_autostart.ps1 -CameraId 1` (har login par apne aap chalta hai).
+- **Server ke alerts app mein**: admin account se login karein, "Alerts" tab dikhega (har 20 second mein naye alert check hote hain).
+- Table `push_devices` aur `cctv_events`/`cameras` pehli restart par `create_all` se ban jaati hain.
+
+### Phone par asli push (optional, Firebase chahiye)
+
+Bina iske app khula ho tab alerts aate hain aur Telegram hamesha chalta hai. App band ho tab bhi notification ke liye:
+1. https://console.firebase.google.com par ek project banayein, usme Android app jodein (package name: `android/app/build.gradle.kts` ka `applicationId`).
+2. `google-services.json` download karein (app ke liye) aur **Project settings > Service accounts > Generate new private key** se ek JSON (server ke liye).
+3. Server par JSON ko `/opt/helmet/fcm-service-account.json` mein rakhein (`chmod 600`, owner `helmet`), `.env` mein `FCM_PROJECT_ID=<project id>` aur `FCM_SERVICE_ACCOUNT_FILE=/opt/helmet/fcm-service-account.json`, phir `sudo systemctl restart helmet`.
+4. App mein Firebase (`firebase_core`, `firebase_messaging`) jodna baaki hai: server taiyar hai (`POST /cctv/devices` token leta hai, `services/push.py` bhejta hai). `google-services.json` milne par ye app-side kaam kiya ja sakta hai.

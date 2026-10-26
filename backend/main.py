@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Request
+﻿from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse, RedirectResponse
 from starlette.middleware.sessions import SessionMiddleware
 
@@ -8,9 +8,12 @@ from admin.panel import NotLoggedIn
 from admin.panel import router as panel_router
 from api.routes_app import router as app_router
 from api.routes_auth import router as auth_router
+from api.routes_cctv import router as cctv_router
+from api.routes_events import router as events_router
 from api.routes_video import purge_stale_uploads
 from api.routes_video import router as video_router
 from db.database import Base, engine
+from services.cctv_status import start_watchdog
 from services.video_processor import fail_stale_jobs
 
 config.UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
@@ -18,6 +21,7 @@ config.RESULTS_DIR.mkdir(parents=True, exist_ok=True)
 Base.metadata.create_all(engine)  # replaced by Alembic migrations later
 fail_stale_jobs()
 purge_stale_uploads()
+start_watchdog()
 
 docs = {} if config.DOCS_ENABLED else {"docs_url": None, "redoc_url": None, "openapi_url": None}
 app = FastAPI(title="Helmet Detection API", **docs)
@@ -55,5 +59,8 @@ def root():
 app.include_router(auth_router)
 app.include_router(video_router)
 app.include_router(app_router)
+app.include_router(cctv_router)
+app.include_router(events_router)
 app.include_router(panel_router)
 mount_sqladmin(app)
+
