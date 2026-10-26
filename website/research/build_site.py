@@ -132,6 +132,7 @@ def main():
     for name, data in keep.items():
         (SITE_ROOT / "assets" / name).write_bytes(data)
     shutil.copy(HERE / "src" / "research.css", SITE_ROOT / "assets" / "research.css")
+    shutil.copy(HERE / "src" / "chrome" / "axom-site.css", SITE_ROOT / "assets" / "axom-site.css")   # the home page's own stylesheet
     shutil.copy(HERE / "src" / "research.js", SITE_ROOT / "assets" / "research.js")
 
     built = {}

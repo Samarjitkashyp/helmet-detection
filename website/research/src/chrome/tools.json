@@ -1,0 +1,42 @@
+[
+ [
+  "Axom AI Chat",
+  "https://chat.aiaxom.co.in/"
+ ],
+ [
+  "QR Code Generator",
+  "/tools/qr-code-generator"
+ ],
+ [
+  "Generate Image",
+  "/tools/ai-image-generator"
+ ],
+ [
+  "SVG Editor",
+  "/tools/svg-editor"
+ ],
+ [
+  "PDF Editor",
+  "/tools/edit-pdf"
+ ],
+ [
+  "Youtube Video Downloader",
+  "/tools/youtube-video-downloader"
+ ],
+ [
+  "Background Remover",
+  "/tools/background-remover"
+ ],
+ [
+  "Video Compress",
+  "/tools/video-compressor"
+ ],
+ [
+  "Merge PDF",
+  "/tools/merge-pdf"
+ ],
+ [
+  "Convert Image",
+  "/tools/image-format-converter"
+ ]
+]

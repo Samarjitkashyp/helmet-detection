@@ -1,22 +1,17 @@
 // Small progressive enhancements. The pages read fine without this file.
 (function () {
-  // mobile menu
-  var btn = document.querySelector('.menu-btn');
-  var nav = document.getElementById('site-nav');
-  if (btn && nav) {
+  // phone menu: the hamburger button of the home page header opens a panel with the same links
+  var btn = document.getElementById('menu-open');
+  var drawer = document.getElementById('m-drawer');
+  if (btn && drawer) {
+    var close = function () { drawer.hidden = true; btn.setAttribute('aria-expanded', 'false'); };
     btn.addEventListener('click', function () {
-      var open = nav.classList.toggle('open');
+      var open = drawer.hidden;
+      drawer.hidden = !open;
       btn.setAttribute('aria-expanded', open ? 'true' : 'false');
-      btn.textContent = open ? '✕' : '☰';
     });
-    document.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape' && nav.classList.contains('open')) {
-        nav.classList.remove('open');
-        btn.setAttribute('aria-expanded', 'false');
-        btn.textContent = '☰';
-        btn.focus();
-      }
-    });
+    drawer.addEventListener('click', function (e) { if (e.target.closest('a')) close(); });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !drawer.hidden) { close(); btn.focus(); } });
   }
 
   // reading progress bar
