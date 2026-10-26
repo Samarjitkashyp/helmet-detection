@@ -14,13 +14,13 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 import pages_a  # noqa: E402
-import pages_b  # noqa: E402
+import pages_hd  # noqa: E402
 from lib import BASE, GITHUB_APP, GITHUB_BACKEND, MODIFIED, page  # noqa: E402
 
 DIST = HERE / "dist"
 SITE_ROOT = DIST / "research"
 
-PAGES = [pages_a.hub, pages_a.overview, pages_a.how_it_works, pages_b.results, pages_b.cctv, pages_b.model_card, pages_b.faq_page]
+PAGES = [pages_a.hub, pages_hd.overview]
 
 KEY_FACTS = {
     "name": "Axom AI helmet detection",
@@ -55,11 +55,7 @@ LLMS = f"""# Axom AI
 
 - [Axom AI Research]({BASE}/research/): index of technical reports from Axom AI.
 - [Helmet Detection]({BASE}/research/helmet-detection/): AI that checks every motorcycle rider for a helmet, from phone videos and CCTV cameras. YOLOv8, per-rider tracking, Telegram / dashboard / app alerts. Open source (MIT).
-- [How helmet detection works, A to Z]({BASE}/research/helmet-detection/how-it-works/): pipeline, tools, training data and design reasons.
-- [Results and benchmarks]({BASE}/research/helmet-detection/results/): precision, recall, mAP, live results at 1 and 2 frames per second, CPU speed, night tests, mistakes and fixes.
-- [CCTV monitoring]({BASE}/research/helmet-detection/cctv-monitoring/): connect an RTSP camera, set up alerts, tuning options.
-- [Model card]({BASE}/research/helmet-detection/model-card/): intended use, data, limits, licences.
-- [FAQ]({BASE}/research/helmet-detection/faq/): short answers.
+  The one page holds everything: how it works from A to Z (#how), results and benchmarks (#results), CCTV set-up (#cctv), honest limits (#limits), model card (#model), open source links (#open) and the FAQ (#faq).
 - [Key facts as JSON]({BASE}/research/helmet-detection/key-facts.json)
 
 ## Key facts (helmet detection, updated {MODIFIED})

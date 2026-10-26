@@ -6,11 +6,7 @@
 
 - [Axom AI Research](https://aiaxom.co.in/research/): index of technical reports from Axom AI.
 - [Helmet Detection](https://aiaxom.co.in/research/helmet-detection/): AI that checks every motorcycle rider for a helmet, from phone videos and CCTV cameras. YOLOv8, per-rider tracking, Telegram / dashboard / app alerts. Open source (MIT).
-- [How helmet detection works, A to Z](https://aiaxom.co.in/research/helmet-detection/how-it-works/): pipeline, tools, training data and design reasons.
-- [Results and benchmarks](https://aiaxom.co.in/research/helmet-detection/results/): precision, recall, mAP, live results at 1 and 2 frames per second, CPU speed, night tests, mistakes and fixes.
-- [CCTV monitoring](https://aiaxom.co.in/research/helmet-detection/cctv-monitoring/): connect an RTSP camera, set up alerts, tuning options.
-- [Model card](https://aiaxom.co.in/research/helmet-detection/model-card/): intended use, data, limits, licences.
-- [FAQ](https://aiaxom.co.in/research/helmet-detection/faq/): short answers.
+  The one page holds everything: how it works from A to Z (#how), results and benchmarks (#results), CCTV set-up (#cctv), honest limits (#limits), model card (#model), open source links (#open) and the FAQ (#faq).
 - [Key facts as JSON](https://aiaxom.co.in/research/helmet-detection/key-facts.json)
 
 ## Key facts (helmet detection, updated 2026-10-26)
