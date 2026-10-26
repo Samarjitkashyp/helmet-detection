@@ -6,7 +6,7 @@ Writes website/research/src/chrome/{header.html, footer.html, axom-site.css}. bu
 Changes made to the copy (the home page's header and footer are React components; these parts need JavaScript there):
  - the "Sign in" button becomes a link (the home page opens a Google sign-in pop-up that a static page cannot open);
  - the hamburger button gets an id so research.js can open a menu panel;
- - the "Cookie Settings" button is dropped (these pages set no cookies and load no analytics).
+ - the "Cookie Settings" button (it opens a pop-up of the React app) becomes a link to the cookie policy page.
 """
 import json
 import re
@@ -51,7 +51,7 @@ nav = nav.replace(m.group(0), f'<a href="{SIGN_IN_URL}"{m.group(1).replace("clas
 assert 'aria-label="Open menu"' in nav
 nav = nav.replace('<button aria-label="Open menu"', '<button id="menu-open" aria-expanded="false" aria-controls="m-drawer" aria-label="Open menu"', 1)
 # 3) cookie settings
-foot, n = re.subn(r'<button type="button" class="[^"]*">Cookie Settings</button>', "", foot)
+foot, n = re.subn(r'<button type="button"( class="[^"]*")>Cookie Settings</button>', r'<a href="/cookie-policy"\1>Cookie Settings</a>', foot)
 assert n == 1, "Cookie Settings button not found"
 
 css_href = re.search(r'href="(/_next/static/css/[^"]+\.css)"', html).group(1)
