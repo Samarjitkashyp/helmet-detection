@@ -53,3 +53,29 @@ CRAWLER_SVG = '''<div class="diagram"><svg viewBox="0 0 940 300" role="img" aria
 </g>
 <g class="link" stroke-width="2.4" fill="none" marker-end="url(#ah2)"><path d="M150 80 H201"/><path d="M150 220 H201"/><path d="M605 84 C700 84 730 110 796 120"/><path d="M605 220 H646"/><path d="M770 220 C790 220 790 160 796 150"/></g>
 </svg></div>'''
+
+
+BROWSER_SVG = '''<div class="diagram"><svg viewBox="0 0 940 300" role="img" aria-labelledby="brT brD" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto">
+<title id="brT">How Axomai Browser and its server fit together</title>
+<desc id="brD">The Windows app and the Android app talk to one Axomai server. The chat proxy adds the OpenAI key, a fixed prompt and a fixed model, applies daily limits and streams the answer back. The same server hosts the installers with their SHA-256 checksums and the landing page.</desc>
+<defs><marker id="ah3" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 z" class="arrow-head"/></marker></defs>
+<g font-size="15" text-anchor="middle">
+<rect class="box-em" x="10" y="30" width="190" height="100" rx="16" stroke-width="1.5"/>
+<text x="105" y="64" font-weight="800">Windows app</text><text class="sub" x="105" y="88" font-size="13">Rust shell</text><text class="sub" x="105" y="108" font-size="13">pages by Edge WebView2</text>
+<rect class="box-em" x="10" y="170" width="190" height="100" rx="16" stroke-width="1.5"/>
+<text x="105" y="204" font-weight="800">Android app</text><text class="sub" x="105" y="228" font-size="13">Flutter</text><text class="sub" x="105" y="248" font-size="13">same chat, same themes</text>
+
+<rect class="box" x="290" y="14" width="330" height="272" rx="18" stroke-width="1.5"/>
+<text class="accent" x="455" y="44">Axomai server (HTTPS)</text>
+<rect class="box-em" x="310" y="62" width="290" height="92" rx="12" stroke-width="1.2"/>
+<text x="455" y="90" font-weight="800">/v1/chat proxy</text><text class="sub" x="455" y="112" font-size="13">checks the request, adds key,</text><text class="sub" x="455" y="132" font-size="13">fixed prompt and model; daily limits</text>
+<rect class="box" x="310" y="170" width="140" height="100" rx="12" stroke-width="1.2"/>
+<text x="380" y="204" font-weight="800">/downloads/</text><text class="sub" x="380" y="228" font-size="13">installers, APK,</text><text class="sub" x="380" y="248" font-size="13">SHA-256, release.json</text>
+<rect class="box" x="460" y="170" width="140" height="100" rx="12" stroke-width="1.2"/>
+<text x="530" y="204" font-weight="800">Landing page</text><text class="sub" x="530" y="228" font-size="13">and admin panel</text>
+
+<rect class="box" x="720" y="62" width="200" height="92" rx="16" stroke-width="1.5"/>
+<text x="820" y="100" font-weight="800">OpenAI</text><text class="sub" x="820" y="124" font-size="13">small chat model</text>
+</g>
+<g class="link" stroke-width="2.4" fill="none" marker-end="url(#ah3)"><path d="M200 80 H286"/><path d="M200 220 C245 220 245 108 286 108"/><path d="M620 108 H716"/><path d="M200 250 C250 250 250 250 306 250"/></g>
+</svg></div>'''

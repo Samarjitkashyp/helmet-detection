@@ -15,13 +15,14 @@ HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 import pages_a  # noqa: E402
 import pages_bot  # noqa: E402
+import pages_browser  # noqa: E402
 import pages_hd  # noqa: E402
 from lib import BASE, GITHUB_APP, GITHUB_BACKEND, MODIFIED, page  # noqa: E402
 
 DIST = HERE / "dist"
 SITE_ROOT = DIST / "research"
 
-PAGES = [pages_a.hub, pages_hd.overview, pages_bot.overview_bot]
+PAGES = [pages_a.hub, pages_hd.overview, pages_bot.overview_bot, pages_browser.overview_browser]
 
 KEY_FACTS = {
     "name": "Axom AI helmet detection",
@@ -59,6 +60,7 @@ LLMS = f"""# Axom AI
   The one page holds everything: how it works from A to Z (#how), results and benchmarks (#results), CCTV set-up (#cctv), honest limits (#limits), model card (#model), open source links (#open) and the FAQ (#faq).
 - [Key facts as JSON]({BASE}/research/helmet-detection/key-facts.json)
 - [Axom AI Crawler Bot]({BASE}/research/axom-ai-crawler-bot/): how a private tool turns websites and scanned Assamese, Hindi and English documents into clean passages with one AI-written question each for the Axom AI chat. Fetching (HTTP, headless browser, WordPress API), change detection with SHA-256, boilerplate cleaning with safety gates, document OCR with Gemini vision, admin approval, measured results and limits.
+- [Axomai Browser]({BASE}/research/axomai-browser/): a free AI browser made in Assam for Windows and Android. Edge WebView2 pages with a Rust shell, a private chat proxy (key, prompt and model on the server, daily limits, chats not saved), a 202-domain ad and tracker shield, AES-256-GCM folder sync, SHA-256-checked updates, measured numbers and limits. Source: github.com/Samarjitkashyp/axomai-browser (MIT).
 
 ## Key facts (helmet detection, updated {MODIFIED})
 
@@ -147,7 +149,7 @@ def main():
     urls = list(built)
     sm = ['<?xml version="1.0" encoding="UTF-8"?>', '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">']
     for u in urls:
-        prio = "1.0" if u == "/research/helmet-detection/" else "0.9" if u in ("/research/", "/research/axom-ai-crawler-bot/") else "0.8"
+        prio = "1.0" if u == "/research/helmet-detection/" else "0.9" if u in ("/research/", "/research/axom-ai-crawler-bot/", "/research/axomai-browser/") else "0.8"
         sm.append(f"<url><loc>{BASE}{u}</loc><lastmod>{MODIFIED}</lastmod><changefreq>monthly</changefreq><priority>{prio}</priority>"
                   + (f"<image:image><image:loc>{BASE}/research/assets/detection-junction.jpg</image:loc><image:caption>Helmet detection: each rider on a busy junction gets a red or green box (faces pixelated)</image:caption></image:image>"
                      if u in ("/research/", "/research/helmet-detection/") else "") + "</url>")

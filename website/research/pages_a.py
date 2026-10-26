@@ -1,6 +1,7 @@
 """The research hub (/research/). The helmet-detection report itself is in pages_hd.py."""
 from lib import BASE, MODIFIED, feature_card, hero, story_card
 from pages_bot import BOT, MINUTES as BOT_MINUTES
+from pages_browser import BROWSER, MINUTES as BROWSER_MINUTES
 from pages_hd import HD
 
 
@@ -15,7 +16,8 @@ def hub():
         "description": p["description"], "dateModified": MODIFIED,
         "mainEntity": {"@type": "ItemList", "itemListElement": [
             {"@type": "ListItem", "position": 1, "url": BASE + HD, "name": "Helmet Detection: AI that checks every rider, from a phone video or a CCTV camera"},
-            {"@type": "ListItem", "position": 2, "url": BASE + BOT, "name": "Axom AI Crawler Bot: websites and documents turned into answers"}]}}]
+            {"@type": "ListItem", "position": 2, "url": BASE + BOT, "name": "Axom AI Crawler Bot: websites and documents turned into answers"},
+            {"@type": "ListItem", "position": 3, "url": BASE + BROWSER, "name": "Axomai Browser: a free AI browser made in Assam"}]}}]
     body = f'''
 {hero("Official Axom AI Research",
       'Practical AI built in Assam, <span class="grad">published with real numbers</span>',
@@ -36,6 +38,10 @@ def hub():
             "How a private tool reads websites and scanned Assamese, Hindi and English documents, cleans the text and writes a question for every passage, so the Axom AI chat can answer from them.",
             "/research/assets/card-crawler-bot.jpg", "Crawler bot pipeline: website, clean text, questions, Axom AI chat",
             BOT_MINUTES, "Oct 26, 2026")}
+{story_card(BROWSER, "Product · AI browser", "Axomai Browser: a free AI browser made in Assam",
+            "How a Windows and Android browser puts Axom AI next to the page you read: a Rust shell on Edge WebView2, a private chat proxy, an ad and tracker shield, encrypted folder sync and checked updates.",
+            "/research/assets/card-browser.jpg", "Axomai Browser window with the Axom AI chat panel beside a page about Assam tea",
+            BROWSER_MINUTES, "Oct 26, 2026")}
 </div>
 </section>'''
     return p, body

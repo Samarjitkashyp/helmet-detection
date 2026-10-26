@@ -9,6 +9,7 @@
   The one page holds everything: how it works from A to Z (#how), results and benchmarks (#results), CCTV set-up (#cctv), honest limits (#limits), model card (#model), open source links (#open) and the FAQ (#faq).
 - [Key facts as JSON](https://aiaxom.co.in/research/helmet-detection/key-facts.json)
 - [Axom AI Crawler Bot](https://aiaxom.co.in/research/axom-ai-crawler-bot/): how a private tool turns websites and scanned Assamese, Hindi and English documents into clean passages with one AI-written question each for the Axom AI chat. Fetching (HTTP, headless browser, WordPress API), change detection with SHA-256, boilerplate cleaning with safety gates, document OCR with Gemini vision, admin approval, measured results and limits.
+- [Axomai Browser](https://aiaxom.co.in/research/axomai-browser/): a free AI browser made in Assam for Windows and Android. Edge WebView2 pages with a Rust shell, a private chat proxy (key, prompt and model on the server, daily limits, chats not saved), a 202-domain ad and tracker shield, AES-256-GCM folder sync, SHA-256-checked updates, measured numbers and limits. Source: github.com/Samarjitkashyp/axomai-browser (MIT).
 
 ## Key facts (helmet detection, updated 2026-10-26)
 
