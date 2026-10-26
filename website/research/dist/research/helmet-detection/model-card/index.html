@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en-IN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Helmet Detection Model Card (YOLOv8s): Data, Limits, Use</title>
+<meta name="description" content="Model card for Axom AI&#x27;s helmet detector: architecture, training data, metrics, intended use, limitations, bias, licences and how to run it.">
+<link rel="canonical" href="https://aiaxom.co.in/research/helmet-detection/model-card/">
+<meta name="robots" content="index,follow,max-snippet:-1,max-image-preview:large,max-video-preview:-1">
+<meta name="author" content="Samarjit Kashyap, Axom AI">
+<meta name="keywords" content="helmet detection model card, YOLOv8s helmet, helmet detection dataset, model card, AI model limitations, Axom AI">
+<link rel="alternate" hreflang="en-IN" href="https://aiaxom.co.in/research/helmet-detection/model-card/">
+<link rel="alternate" hreflang="x-default" href="https://aiaxom.co.in/research/helmet-detection/model-card/">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#f0fdf4">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0b1220">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Axom AI">
+<meta property="og:locale" content="en_IN">
+<meta property="og:url" content="https://aiaxom.co.in/research/helmet-detection/model-card/">
+<meta property="og:title" content="Helmet Detection Model Card (YOLOv8s): Data, Limits, Use">
+<meta property="og:description" content="Model card for Axom AI&#x27;s helmet detector: architecture, training data, metrics, intended use, limitations, bias, licences and how to run it.">
+<meta property="og:image" content="https://aiaxom.co.in/research/assets/og-helmet-detection.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Helmet detection results on traffic camera footage, riders shown with verdict boxes">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Helmet Detection Model Card (YOLOv8s): Data, Limits, Use">
+<meta name="twitter:description" content="Model card for Axom AI&#x27;s helmet detector: architecture, training data, metrics, intended use, limitations, bias, licences and how to run it.">
+<meta name="twitter:image" content="https://aiaxom.co.in/research/assets/og-helmet-detection.jpg">
+<meta property="article:published_time" content="2026-10-26">
+<meta property="article:modified_time" content="2026-10-26">
+<meta property="article:author" content="Samarjit Kashyap">
+<meta property="article:section" content="Research">
+<meta property="article:tag" content="helmet detection model card">
+<meta property="article:tag" content="YOLOv8s helmet">
+<meta property="article:tag" content="helmet detection dataset">
+<meta property="article:tag" content="model card">
+<meta property="article:tag" content="AI model limitations">
+<meta property="article:tag" content="Axom AI">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" href="/favicon-32x32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180">
+<link rel="sitemap" type="application/xml" href="/research/sitemap.xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/research/assets/research.css?v=20261026">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://aiaxom.co.in/"},{"@type":"ListItem","position":2,"name":"Research","item":"https://aiaxom.co.in/research/"},{"@type":"ListItem","position":3,"name":"Helmet detection","item":"https://aiaxom.co.in/research/helmet-detection/"},{"@type":"ListItem","position":4,"name":"Model card","item":"https://aiaxom.co.in/research/helmet-detection/model-card/"}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","@id":"https://aiaxom.co.in/research/helmet-detection/model-card/#article","headline":"Helmet detection model card","description":"Model card for Axom AI's helmet detector: architecture, training data, metrics, intended use, limitations, bias, licences and how to run it.","image":["https://aiaxom.co.in/research/assets/og-helmet-detection.jpg"],"inLanguage":"en-IN","datePublished":"2026-10-26","dateModified":"2026-10-26","author":{"@type":"Person","name":"Samarjit Kashyap","url":"https://github.com/Samarjitkashyp","jobTitle":"Founder, Axom AI","worksFor":{"@id":"https://aiaxom.co.in/#organization"}},"publisher":{"@id":"https://aiaxom.co.in/#organization"},"mainEntityOfPage":"https://aiaxom.co.in/research/helmet-detection/model-card/","url":"https://aiaxom.co.in/research/helmet-detection/model-card/","isAccessibleForFree":true,"keywords":"helmet detection model card, YOLOv8s helmet, helmet detection dataset, model card, AI model limitations, Axom AI","about":[{"@type":"Thing","name":"Model card"},{"@type":"Thing","name":"Helmet detection"},{"@type":"Thing","name":"YOLO"},{"@type":"Thing","name":"Responsible AI"}],"speakable":{"@type":"SpeakableSpecification","cssSelector":[".answer","h1"]}}</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header"><div class="wrap bar">
+<a class="brand" href="/"><img src="/axom-browser-logo.png" width="40" height="40" alt="Axom AI logo"><span><b>Axom AI</b><small>SMART &bull; ASSAMESE &bull; AI FOR ALL</small></span></a>
+<button class="menu-btn" type="button" aria-expanded="false" aria-controls="site-nav" aria-label="Open menu">&#9776;</button>
+<nav class="nav" id="site-nav" aria-label="Main"><a href="/tools">AI Tools</a><a href="https://chat.aiaxom.co.in/">Axom AI Chat</a><a href="/research/" aria-current="page">Research</a><a href="/use-cases">Use Cases</a><a href="/pricing">Pricing</a><a href="/blog">Blog</a><a href="/faq">FAQ</a><a href="/about">About</a><a href="/contact">Contact</a></nav>
+</div></header>
+<nav class="crumbs wrap" aria-label="Breadcrumb"><ol><li><a href="/">Home</a></li><li><a href="/research/">Research</a></li><li><a href="/research/helmet-detection/">Helmet detection</a></li><li>Model card</li></ol></nav>
+<main id="main">
+<article>
+<header class="hero wrap"><span class="eyebrow">Reference</span>
+<h1>Helmet detection <span class="grad">model card</span></h1>
+<p class="lead">What the model is, what it was trained on, what it should and should not be used for.</p><p class="meta"><span>By <strong><a href="https://github.com/Samarjitkashyp">Samarjit Kashyap</a></strong>, Axom AI</span><span>Published <strong><time datetime="2026-10-26">26 Oct 2026</time></strong></span><span>Updated <strong><time datetime="2026-10-26">26 Oct 2026</time></strong></span></p></header>
+<div class="wrap"><div class="read" style="margin:0">
+<div class="answer"><h2>Quick answer</h2>
+<p>A YOLOv8s object detector with two classes, <code>helmet</code> and <code>no_helmet</code>, fine-tuned on public helmet datasets and on CCTV frames from Myanmar traffic cameras. It is meant to screen road footage for riders without helmets, with a person reviewing each alert.</p></div>
+
+<div class="table-wrap"><table><caption>Model details</caption><tbody>
+<tr><th scope="row">Name</th><td>Axom AI helmet detector, CCTV fine-tune (October 2026)</td></tr>
+<tr><th scope="row">Architecture</th><td>Ultralytics YOLOv8s (about 11.1 million parameters)</td></tr>
+<tr><th scope="row">Task</th><td>Object detection of heads with two classes: <code>helmet</code> (0), <code>no_helmet</code> (1)</td></tr>
+<tr><th scope="row">Input</th><td>RGB image; 960 px used for training and 768 px for live CCTV; a 416 px ONNX build runs on phones</td></tr>
+<tr><th scope="row">Companion models</th><td>COCO-pretrained YOLOv8s (finds motorcycles); YOLOv8n-cls head-crop classifier (second opinion)</td></tr>
+<tr><th scope="row">Developer</th><td>Axom AI (Samarjit Kashyap), Guwahati, Assam, India</td></tr>
+<tr><th scope="row">Code licence</th><td>MIT. The weights are derived from Ultralytics YOLOv8 (AGPL-3.0) and datasets under CC BY 4.0 and MIT.</td></tr>
+<tr><th scope="row">Repository</th><td><a href="https://github.com/Samarjitkashyp/helmet-detection">github.com/Samarjitkashyp/helmet-detection</a></td></tr></tbody></table></div>
+
+<h2>Intended use</h2>
+<ul><li>Screening traffic-camera footage and uploaded videos for motorcycle riders without a helmet, with <strong>human review</strong> of each alert.</li>
+<li>Road-safety studies and awareness campaigns.</li>
+<li>Research and education on object detection and tracking.</li></ul>
+<h2>Out-of-scope use</h2>
+<ul><li>Automatic fines or penalties without human review.</li>
+<li>Identifying people. The system does not recognise faces or read plates, and should not be extended to.</li>
+<li>Safety-critical decisions where a miss or a false alarm could cause harm.</li>
+<li>Night scenes, heavy rain or very distant riders, until validated on your own footage.</li></ul>
+
+<h2>Training data</h2>
+<div class="table-wrap"><table><thead><tr><th>Source</th><th>Used for</th><th>Licence</th></tr></thead><tbody>
+<tr><td>Seven public Roboflow Universe datasets (about 11.7 thousand training images; helmets, riders, caps, hats, hijabs, head accessories)</td><td>First model</td><td>CC BY 4.0, one MIT</td></tr>
+<tr><td><a href="https://osf.io/4pwj8/">HELMET dataset</a>: 910 traffic-camera clips from Myanmar, 100 frames each, 1080p</td><td>CCTV fine-tune and all CCTV tests</td><td>CC BY 4.0</td></tr></tbody></table></div>
+<p>Labels for the CCTV fine-tune were derived from the dataset's per-motorcycle ground truth: our detector found heads inside each motorcycle and each head received the bike's label when every person on it agreed. Caps, hats, hijabs and scarves are labelled <code>no_helmet</code>.</p>
+
+<h2>Evaluation</h2>
+<div class="table-wrap"><table><thead><tr><th>Set</th><th class="num">Precision</th><th class="num">Recall</th><th class="num">mAP@50</th></tr></thead><tbody>
+<tr><td>Held-out CCTV frames (500 frames, 1,114 riders)</td><td class="num">0.798</td><td class="num">0.791</td><td class="num">0.748</td></tr></tbody></table></div>
+<p>Live-worker results at one and two analysed frames per second, speed and night tests are on the <a href="/research/helmet-detection/results/">results page</a>.</p>
+
+<h2>Limitations and bias</h2>
+<ul><li><strong>Geography and setting.</strong> The CCTV data is from Myanmar. Clothing, helmet styles, road layouts and camera angles differ in other places.</li>
+<li><strong>Light.</strong> Training data is daytime. Night recall is 0.34 on night-style test frames; night training has not been done yet.</li>
+<li><strong>Size and distance.</strong> Heads a few pixels wide are missed.</li>
+<li><strong>Head coverings.</strong> Turbans are not in the training data and may be judged wrongly.</li>
+<li><strong>Frame rate.</strong> Fewer analysed frames per second means fewer riders caught.</li>
+<li><strong>Helmet quality.</strong> The model checks whether a helmet is present, not whether it is certified or fastened correctly.</li></ul>
+
+<h2>Ethical considerations</h2>
+<ul><li>Alert photos can show faces. Keep them access-controlled (administrators only here), keep them only as long as needed, and follow local privacy law.</li>
+<li>False alarms and misses happen. Design the process so that a person checks before anyone is affected.</li>
+<li>Be open with the public when cameras run AI analysis, where the law or good practice requires it.</li></ul>
+
+<h2>How to run it</h2>
+<pre><code>git clone https://github.com/Samarjitkashyp/helmet-detection
+cd helmet-detection/backend
+pip install -r requirements.txt
+python -m services.cctv_worker --url rtsp://... --name Gate --local</code></pre>
+<p>The Android app is at <a href="https://github.com/Samarjitkashyp/helmet-detection-mobile-app">github.com/Samarjitkashyp/helmet-detection-mobile-app</a>; install the published build from <a href="https://helmet-detection.aiaxom.co.in/app">helmet-detection.aiaxom.co.in/app</a>.</p>
+
+<h2>Version history</h2>
+<ul><li><strong>26 Oct 2026.</strong> CCTV fine-tune: recall on held-out CCTV frames 0.62 &rarr; 0.79. Per-rider tracker for low frame rates, crop classifier, size check, speed profile.</li>
+<li><strong>Earlier.</strong> First model: seven public datasets, caps and hats as no helmet.</li></ul>
+<p>Questions or corrections: <a href="/contact">contact Axom AI</a>.</p>
+</div></div></article></main>
+<footer class="site-footer"><div class="wrap">
+<div class="foot-grid">
+<div><a class="brand" href="/"><img src="/axom-browser-logo.png" width="40" height="40" alt="Axom AI logo" loading="lazy"><span><b>Axom AI</b><small>SMART &bull; ASSAMESE &bull; AI FOR ALL</small></span></a>
+<p style="margin-top:14px;max-width:420px">Axom AI is Assam's first indigenous generative artificial intelligence platform, engineered to bridge the linguistic divide for 15 million Assamese speakers with native conversational models, multimodal creative suites, and regional computing infrastructure.</p></div>
+<div><h4>Product</h4><ul><li><a href="/tools">AI Tools</a></li><li><a href="/pricing">Pricing</a></li><li><a href="/blog">What's New</a></li><li><a href="/use-cases">Use Cases</a></li></ul></div>
+<div><h4>Research</h4><ul><li><a href="/research/">All research</a></li><li><a href="/research/helmet-detection/">Helmet detection</a></li><li><a href="/research/helmet-detection/results/">Results</a></li><li><a href="/research/helmet-detection/model-card/">Model card</a></li></ul></div>
+<div><h4>Resources</h4><ul><li><a href="/blog">Blog &amp; Insights</a></li><li><a href="/faq">Frequently Asked Questions</a></li><li><a href="https://user.aiaxom.co.in/support/">Help &amp; Support</a></li><li><a href="https://chat.aiaxom.co.in/tools">AI Tools Directory</a></li></ul></div>
+<div><h4>Company</h4><ul><li><a href="/about">About Axom AI</a></li><li><a href="/privacy">Privacy Policy</a></li><li><a href="/terms">Terms of Service</a></li><li><a href="/contact">Contact Us</a></li></ul></div>
+</div>
+<div class="foot-bottom"><span>&copy; 2026 Axom AI. All rights reserved.</span><span><a href="/privacy">Privacy Policy</a> &middot; <a href="/terms">Terms of Service</a> &middot; <a href="/cookie-policy">Cookie Policy</a></span><span>Made with &hearts; in Assam, India</span></div>
+</div></footer>
+<script src="/research/assets/research.js?v=20261026" defer></script>
+</body></html>

@@ -1,0 +1,30 @@
+# Axom AI
+
+> Axom AI is Assam's first indigenous generative AI platform (Guwahati, Assam, India), with an Assamese AI assistant, AI tools and open research. Founder: Samarjit Kashyap.
+
+## Research
+
+- [Axom AI Research](https://aiaxom.co.in/research/): index of technical reports from Axom AI.
+- [Helmet Detection](https://aiaxom.co.in/research/helmet-detection/): AI that checks every motorcycle rider for a helmet, from phone videos and CCTV cameras. YOLOv8, per-rider tracking, Telegram / dashboard / app alerts. Open source (MIT).
+- [How helmet detection works, A to Z](https://aiaxom.co.in/research/helmet-detection/how-it-works/): pipeline, tools, training data and design reasons.
+- [Results and benchmarks](https://aiaxom.co.in/research/helmet-detection/results/): precision, recall, mAP, live results at 1 and 2 frames per second, CPU speed, night tests, mistakes and fixes.
+- [CCTV monitoring](https://aiaxom.co.in/research/helmet-detection/cctv-monitoring/): connect an RTSP camera, set up alerts, tuning options.
+- [Model card](https://aiaxom.co.in/research/helmet-detection/model-card/): intended use, data, limits, licences.
+- [FAQ](https://aiaxom.co.in/research/helmet-detection/faq/): short answers.
+- [Key facts as JSON](https://aiaxom.co.in/research/helmet-detection/key-facts.json)
+
+## Key facts (helmet detection, updated 2026-10-26)
+
+- Recall on held-out CCTV frames: 0.62 before and 0.79 after CCTV fine-tuning (mAP@50 0.55 to 0.75; 500 frames, 1,114 riders; HELMET dataset, CC BY 4.0).
+- Live CCTV worker: about 74% of bare-headed riders alerted at 1 analysed frame per second and about 90% at 2; about 1% of alerts on fully helmeted bikes (14 clips, 170 riders).
+- Runs on a CPU without a GPU: about 1.4 analysed frames per second on an Intel Core i3.
+- Limits: daytime training data; night recall 0.34 on night-style frames (night training not done yet); turbans not covered; a person should review each alert.
+- Code: https://github.com/Samarjitkashyp/helmet-detection and https://github.com/Samarjitkashyp/helmet-detection-mobile-app (MIT).
+
+## Platform
+
+- [Axom AI](https://aiaxom.co.in/): Assamese AI platform.
+- [Axom AI Chat](https://chat.aiaxom.co.in/): chat in native Assamese.
+- [AI Tools](https://aiaxom.co.in/tools): image, PDF, video and QR tools.
+- [About](https://aiaxom.co.in/about)
+- [Contact](https://aiaxom.co.in/contact)

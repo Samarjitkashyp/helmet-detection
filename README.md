@@ -71,6 +71,8 @@ python -m services.cctv_worker --camera-id 1                  # run by hand
 
 A desktop i3 CPU analyses about 1.4 frames per second with the defaults; a faster CPU or a GPU raises the share of riders caught. On held-out CCTV frames, fine-tuning on this dataset (`training/finetune_cctv_colab.ipynb`) lifted recall from 0.62 to 0.79 and mAP@50 from 0.55 to 0.75. Night footage is not covered by real data yet; `training/make_night_data.py` makes dark, infrared-style copies of daytime frames as a stand-in (before training on them, recall was 0.76 in daylight and 0.34 on the same frames made dark).
 
+The public write-up of this work lives at **[aiaxom.co.in/research/helmet-detection](https://aiaxom.co.in/research/helmet-detection/)** (how it works, results, CCTV setup, model card, FAQ). Its source is in `website/research/` (`python website/research/build_site.py` builds the static pages; `install_on_server.sh` and `axom-research.nginx.conf` publish them next to the main site).
+
 ## Model performance
 
 The weights in `backend/models/best.pt` are the CCTV fine-tune of the model described here. The table below is the original model, YOLOv8s fine-tuned at 640 px on ~11.7k training images from seven public datasets (see [Credits](#datasets--credits)). Held-out test images, confidence threshold 0.4:

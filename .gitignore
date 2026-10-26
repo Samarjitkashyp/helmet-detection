@@ -62,3 +62,7 @@ backend/models/backup/
 helmet_bundle.zip
 helmet_finetune_*.zip
 
+
+# research site build helpers
+research_site.tar
+website/research/_preview/

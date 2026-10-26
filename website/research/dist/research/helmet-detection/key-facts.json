@@ -1,0 +1,54 @@
+{
+  "name": "Axom AI helmet detection",
+  "publisher": "Axom AI (Axom AI Technologies), Guwahati, Assam, India",
+  "author": "Samarjit Kashyap",
+  "url": "https://aiaxom.co.in/research/helmet-detection/",
+  "updated": "2026-10-26",
+  "what_it_is": "Computer vision system that finds motorcycle riders in phone videos and CCTV streams, decides helmet or no helmet per person, and alerts on Telegram, a dashboard and an Android app.",
+  "model": "Ultralytics YOLOv8s fine-tuned (classes: helmet, no_helmet); COCO YOLOv8s finds motorcycles; YOLOv8n-cls head-crop classifier",
+  "runs_on": "CPU, no GPU needed (desktop Intel Core i3: about 1.4 analysed frames per second)",
+  "measurements": [
+    {
+      "claim": "Recall on held-out CCTV frames before and after CCTV fine-tuning",
+      "before": 0.617,
+      "after": 0.791,
+      "precision_after": 0.798,
+      "map50_before": 0.547,
+      "map50_after": 0.748,
+      "frames": 500,
+      "riders": 1114,
+      "data": "HELMET dataset (Myanmar traffic cameras, CC BY 4.0), clips not used for training"
+    },
+    {
+      "claim": "Share of bare-headed riders alerted by the live CCTV worker",
+      "at_1_fps": 0.74,
+      "at_2_fps": 0.9,
+      "alerts_on_fully_helmeted_bikes": 0.01,
+      "clips": 14,
+      "bare_headed_riders": 170
+    },
+    {
+      "claim": "Recall on night-style frames (model not yet trained on night images)",
+      "daylight": 0.755,
+      "night_style": 0.344,
+      "frames": 200
+    }
+  ],
+  "limits": [
+    "Training data is daytime; night recall is 0.34 on night-style frames (night training not done yet)",
+    "Turbans are not in the training data",
+    "Test footage is from Myanmar traffic cameras; results differ per camera",
+    "Screening tool: a person should review each alert"
+  ],
+  "licences": {
+    "code": "MIT",
+    "base_model": "Ultralytics YOLOv8 (AGPL-3.0)",
+    "data": "CC BY 4.0 and MIT datasets (HELMET dataset: CC BY 4.0)"
+  },
+  "source_code": [
+    "https://github.com/Samarjitkashyp/helmet-detection",
+    "https://github.com/Samarjitkashyp/helmet-detection-mobile-app"
+  ],
+  "try_it": "https://helmet-detection.aiaxom.co.in/app",
+  "who_source": "https://www.who.int/news/item/05-04-2023-new-who-guide-aims-to-boost-the-use-of-life-saving-helmets-for-motorcycle-riders"
+}
