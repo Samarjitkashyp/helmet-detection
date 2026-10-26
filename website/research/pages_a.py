@@ -1,7 +1,7 @@
 """Hub page, helmet-detection overview and the A-to-Z "how it works" page."""
 from diagram import PIPELINE_SVG
 from lib import (APP_PAGE, BASE, GITHUB_APP, GITHUB_BACKEND, MODIFIED, WHO_URL, article_schema, e, faq_schema,
-                 meta_line, related, stat)
+                 feature_card, hero, meta_line, related, stat, story_card)
 
 HD = "/research/helmet-detection/"
 WHO_TEXT = ("WHO reports that head trauma is the leading cause of death for motorcycle riders, and that safe, quality helmets "
@@ -33,23 +33,28 @@ def hub():
         "mainEntity": {"@type": "ItemList", "itemListElement": [
             {"@type": "ListItem", "position": 1, "url": BASE + HD, "name": "Helmet Detection: AI that checks every rider, from a phone video or a CCTV camera"}]}}]
     body = f'''
-<section class="hero wrap">
-<span class="eyebrow">Official Axom AI Research</span>
-<h1>Practical AI built in Assam, <span class="grad">published with real numbers</span></h1>
-<p class="lead">What we built, how we measured it, what worked, what failed and what we still cannot do. Every report links to its code, its data and its limits.</p>
-{meta_line()}
-</section>
-<div class="wrap"><div class="read" style="margin:0">
+{hero("Official Axom AI Research",
+      'Practical AI built in Assam, <span class="grad">published with real numbers</span>',
+      "What we built, how we measured it, what worked, what failed and what we still cannot do. Every report links to its code, its data and its limits.",
+      chips=[("camera", "Computer vision"), ("shield", "Road safety"), ("chart", "Measured results"), ("code", "Open source code"), ("moon", "Honest limits")])}
+<div class="wrap"><div class="prose" style="margin-inline:auto">
 <div class="answer"><h2>What is Axom AI Research?</h2>
 <p>Axom AI Research is the home of technical reports from Axom AI, Assam's first indigenous generative AI platform. Each report explains a system we built, the data and tools behind it, the results we measured on data the model had never seen, and the places where it still fails.</p></div></div></div>
 
-<section class="wrap"><h2>Featured report</h2>
-<a class="card feature" href="{HD}">
-<div><span class="tag">Computer vision &middot; Road safety</span>
-<h3>Helmet Detection: every rider checked, from a phone video or a CCTV camera</h3>
-<p>An end-to-end system: YOLOv8 detection, per-rider tracking, an Android app, an admin dashboard and live CCTV alerts. Recall on held-out CCTV frames rose from 0.62 to 0.79 after fine-tuning; the live worker caught about 90% of bare-headed riders at two analysed frames per second.</p>
-<p class="more">Read the report &rarr;</p></div>
-<img src="/research/assets/detection-junction.jpg" width="1280" height="720" alt="Traffic junction where an AI model marks each rider with a red box for no helmet or a green box for helmet; faces are pixelated" loading="eager" fetchpriority="high"></a>
+<section class="wrap">
+{feature_card(HD, "Computer vision · Road safety", "Helmet Detection: every rider checked, from a phone video or a CCTV camera",
+              "An end-to-end system: YOLOv8 detection, per-rider tracking, an Android app, an admin dashboard and live CCTV alerts. Recall on held-out CCTV frames rose from 0.62 to 0.79 after fine-tuning; the live worker caught about 90% of bare-headed riders at two analysed frames per second.",
+              "/research/assets/detection-junction.jpg", "Traffic junction where an AI model marks each rider with a red box for no helmet or a green box for helmet; faces are pixelated",
+              9, "Oct 26, 2026")}
+
+<p class="section-label"><span>In this report</span><span>Helmet detection, in depth</span></p>
+<div class="s-grid">
+{story_card(HD + "how-it-works/", "Explained", "How helmet detection works, from A to Z", "Every step of the pipeline, every tool we used, and the reasons behind each choice, including the ones that did not work.", "/research/assets/card-how.jpg", "Riders on a street marked with red boxes for no helmet; faces are pixelated", 9, "Oct 26, 2026")}
+{story_card(HD + "results/", "Results", "Helmet detection results: what we measured", "Precision, recall and mAP on held-out CCTV frames, live results at one and two frames per second, CPU speed, night tests and the mistakes we made.", "/research/assets/card-results.jpg", "Bar chart of recall before and after CCTV fine-tuning and riders alerted at one and two frames per second", 7, "Oct 26, 2026")}
+{story_card(HD + "cctv-monitoring/", "Live monitoring", "CCTV helmet detection: alerts within seconds", "Connect an RTSP camera and get a photo of every rider without a helmet on Telegram, in the dashboard and in the app.", "/research/assets/card-cctv.jpg", "Busy junction with riders marked for helmet and no helmet; faces are pixelated", 4, "Oct 26, 2026")}
+{story_card(HD + "model-card/", "Reference", "Helmet detection model card", "What the model is, what it was trained on, what it should and should not be used for, and its licences.", "/research/assets/card-model.jpg", "Model card summary: YOLOv8s, helmet and no_helmet classes", 4, "Oct 26, 2026")}
+{story_card(HD + "faq/", "FAQ", "Helmet detection: questions and answers", "Short answers on accuracy, night, GPU, caps and turbans, privacy, open source and how to try it.", "/research/assets/card-faq.jpg", "Question mark graphic for the helmet detection FAQ", 8, "Oct 26, 2026")}
+</div>
 </section>
 
 <section class="wrap"><h2>How we publish</h2>
@@ -96,17 +101,11 @@ def overview():
     faq_html = "".join(f"<details><summary>{e(q)}</summary><p>{e(a)}</p></details>" for q, a in OVERVIEW_FAQ)
     body = f'''
 <article>
-<header class="hero wrap"><div class="hero-grid">
-<div>
-<span class="eyebrow">Official Axom AI research &middot; Road safety</span>
-<h1>Helmet Detection AI: <span class="grad">every rider checked,</span> from a phone video or a CCTV camera</h1>
-<p class="lead">An end-to-end system from Axom AI that finds each motorcycle rider, decides helmet or no helmet, and sends a photo alert for every rider without one.</p>
-{meta_line()}
-<div class="cta"><a class="btn primary" href="{url}results/">See the results</a><a class="btn" href="{GITHUB_BACKEND}">View code on GitHub</a><a class="btn" href="{APP_PAGE}">Try the Android app</a></div>
-</div>
-<div class="hero-visual"><img src="/research/assets/detection-junction.jpg" width="1280" height="720" alt="Busy junction where an AI model marks every motorcycle rider with a red box for no helmet or a green box for helmet; faces are pixelated" fetchpriority="high">
-<div class="float b"><b>~90%</b>of bare-headed riders alerted</div><div class="float a"><b>0.79</b>recall on held-out CCTV frames</div></div>
-</div></header>
+{hero("Official Axom AI Research · Road Safety",
+      'Helmet Detection AI: <span class="grad">every rider checked,</span> from a phone video or a CCTV camera',
+      "An end-to-end system from Axom AI that finds each motorcycle rider, decides helmet or no helmet, and sends a photo alert for every rider without one.",
+      chips=[("shield", "Road safety"), ("camera", "CCTV cameras"), ("phone", "Android app"), ("bolt", "Telegram alerts"), ("cpu", "No GPU needed"), ("code", "Open source")],
+      cta=f'<a class="btn primary" href="{url}results/">See the results</a><a class="btn" href="{GITHUB_BACKEND}">View code on GitHub</a><a class="btn" href="{APP_PAGE}">Try the Android app</a>')}
 
 <div class="wrap"><div class="read" style="margin:0">
 <div class="answer"><h2>Quick answer</h2>
@@ -229,12 +228,7 @@ def how_it_works():
     svg = PIPELINE_SVG
     body = f'''
 <article>
-<header class="hero wrap">
-<span class="eyebrow">Technical deep dive</span>
-<h1>How helmet detection works, <span class="grad">from A to Z</span></h1>
-<p class="lead">Every stage of Axom AI's system, the tools behind it, and the reasons we chose them, including the choices that did not work.</p>
-{meta_line()}
-</header>
+{hero("Technical deep dive \u00b7 A to Z", 'How helmet detection works, <span class="grad">from A to Z</span>', "Every stage of Axom AI's system, the tools behind it, and the reasons we chose them, including the choices that did not work.", chips=[("camera", "Input"), ("cpu", "Detection"), ("users", "Tracking"), ("bolt", "Alerts"), ("book", "Training")])}
 <div class="wrap"><div class="read" style="margin:0">
 <div class="answer"><h2>Quick answer</h2>
 <p>The system finds motorcycles with a general YOLOv8s model, finds heads with a helmet-trained YOLOv8s (on the whole frame and on enlarged crops), double-checks each head with a small classifier, keeps only heads that sit on a motorcycle, tracks every rider separately and raises one alert per rider without a helmet. It runs on a CPU.</p></div>

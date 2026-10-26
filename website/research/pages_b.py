@@ -1,5 +1,5 @@
 """Results, CCTV monitoring, model card and FAQ pages."""
-from lib import (APP_PAGE, BASE, GITHUB_APP, GITHUB_BACKEND, article_schema, e, faq_schema, meta_line, related)
+from lib import (APP_PAGE, BASE, GITHUB_APP, GITHUB_BACKEND, article_schema, e, faq_schema, hero, meta_line, related)
 
 HD = "/research/helmet-detection/"
 
@@ -61,9 +61,7 @@ def results():
                                    cites=[("HELMET dataset (Myanmar traffic cameras, CC BY 4.0)", "https://osf.io/4pwj8/")])]
     body = f'''
 <article>
-<header class="hero wrap"><span class="eyebrow">Results &amp; benchmarks</span>
-<h1>Helmet detection results: <span class="grad">what we measured</span></h1>
-<p class="lead">Accuracy, speed, night behaviour and the mistakes we made on the way. Every number says what it was measured on.</p>{meta_line()}</header>
+{hero("Results & benchmarks", 'Helmet detection results: <span class="grad">what we measured</span>', "Accuracy, speed, night behaviour and the mistakes we made on the way. Every number says what it was measured on.", chips=[("target", "Accuracy"), ("bolt", "Speed"), ("moon", "Night tests"), ("chart", "Live results"), ("book", "What went wrong")])}
 <div class="wrap"><div class="read" style="margin:0">
 <div class="answer"><h2>Quick answer</h2>
 <p>After fine-tuning on CCTV frames, recall on held-out frames rose from 0.62 to 0.79 and mAP@50 from 0.55 to 0.75. In the live CCTV worker, about 74% of bare-headed riders were alerted when one frame per second was analysed and about 90% at two frames per second, with about 1% of alerts on fully helmeted bikes. On night-like frames recall is only 0.34, and night training is still to be done.</p></div>
@@ -154,9 +152,7 @@ def cctv():
                                    about=["CCTV", "RTSP", "Helmet detection", "Telegram Bot API"])]
     body = f'''
 <article>
-<header class="hero wrap"><span class="eyebrow">Live monitoring</span>
-<h1>CCTV helmet detection: <span class="grad">alerts within seconds</span></h1>
-<p class="lead">Connect an IP camera, and get a photo of every rider without a helmet on Telegram, in the dashboard and in the app.</p>{meta_line()}</header>
+{hero("Live monitoring", 'CCTV helmet detection: <span class="grad">alerts within seconds</span>', "Connect an IP camera, and get a photo of every rider without a helmet on Telegram, in the dashboard and in the app.", chips=[("camera", "RTSP cameras"), ("bolt", "Telegram alerts"), ("phone", "Android app"), ("shield", "Offline warnings"), ("cpu", "No GPU")])}
 <div class="wrap"><div class="read" style="margin:0">
 <div class="answer"><h2>Quick answer</h2>
 <p>A worker program runs on a PC near the camera. It reads the camera's RTSP stream, finds and tracks every rider, and uploads a photo for each rider without a helmet to the Axom AI server, which sends a Telegram message and shows the event in the dashboard and the Android app. A heartbeat every minute lets the server warn you if the PC or the stream stops.</p></div>
@@ -215,9 +211,7 @@ def model_card():
                                    about=["Model card", "Helmet detection", "YOLO", "Responsible AI"])]
     body = f'''
 <article>
-<header class="hero wrap"><span class="eyebrow">Reference</span>
-<h1>Helmet detection <span class="grad">model card</span></h1>
-<p class="lead">What the model is, what it was trained on, what it should and should not be used for.</p>{meta_line()}</header>
+{hero("Reference", 'Helmet detection <span class="grad">model card</span>', "What the model is, what it was trained on, what it should and should not be used for.", chips=[("book", "Data and licences"), ("shield", "Intended use"), ("lock", "Privacy"), ("code", "How to run")])}
 <div class="wrap"><div class="read" style="margin:0">
 <div class="answer"><h2>Quick answer</h2>
 <p>A YOLOv8s object detector with two classes, <code>helmet</code> and <code>no_helmet</code>, fine-tuned on public helmet datasets and on CCTV frames from Myanmar traffic cameras. It is meant to screen road footage for riders without helmets, with a person reviewing each alert.</p></div>
@@ -293,9 +287,7 @@ def faq_page():
                                       "dateModified": "2026-10-26", "speakable": {"@type": "SpeakableSpecification", "cssSelector": ["h1", "details p"]}}]
     body = f'''
 <article>
-<header class="hero wrap"><span class="eyebrow">FAQ</span>
-<h1>Helmet detection: <span class="grad">questions and answers</span></h1>
-<p class="lead">Short, direct answers about how Axom AI's helmet detection works and what it can and cannot do.</p>{meta_line()}</header>
+{hero("FAQ", 'Helmet detection: <span class="grad">questions and answers</span>', "Short, direct answers about how Axom AI's helmet detection works and what it can and cannot do.", chips=[("target", "Accuracy"), ("moon", "Night"), ("cpu", "GPU and speed"), ("lock", "Privacy"), ("code", "Open source")])}
 <div class="wrap"><div class="read" style="margin:0">
 {"".join(f'<details open><summary>{e(q)}</summary><p>{e(a)}</p></details>' if i < 3 else f'<details><summary>{e(q)}</summary><p>{e(a)}</p></details>' for i, (q, a) in enumerate(FAQ))}
 <h2>Keep reading</h2>

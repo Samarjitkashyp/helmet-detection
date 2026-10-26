@@ -9,7 +9,7 @@ from html import escape
 BASE = "https://aiaxom.co.in"
 PUBLISHED = "2026-10-26"
 MODIFIED = "2026-10-26"
-ASSET_V = "20261026b"
+ASSET_V = "20261026c"
 SITE = "Axom AI"
 ORG_ID = f"{BASE}/#organization"       # the Organization the main site already declares
 AUTHOR = {"@type": "Person", "name": "Samarjit Kashyap", "url": "https://github.com/Samarjitkashyp",
@@ -21,7 +21,66 @@ WHO_URL = "https://www.who.int/news/item/05-04-2023-new-who-guide-aims-to-boost-
 OG_IMAGE = f"{BASE}/research/assets/og-helmet-detection.jpg"
 
 NAV = [("AI Tools", "/tools"), ("Use Cases", "/use-cases"), ("Pricing", "/pricing"), ("Blog &amp; Insights", "/blog"),
-       ("Research", "/research/"), ("FAQ", "/faq"), ("About Us", "/about"), ("Contact Us", "/contact")]
+       ("FAQ", "/faq"), ("About Us", "/about"), ("Contact Us", "/contact")]    # Research is linked from the footer
+
+_S = '<svg width="{s}" height="{s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">{p}</svg>'
+SMALL = {
+    "target": '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/>',
+    "sparkle":'<path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 17l.7 1.8L21.5 19.5l-1.8.7L19 22l-.7-1.8-1.8-.7 1.8-.7z"/>',
+    "camera": '<path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2"/>',
+    "phone": '<rect x="5" y="2" width="14" height="20" rx="3"/><path d="M12 18h.01"/>',
+    "code": '<path d="m16 18 6-6-6-6M8 6l-6 6 6 6"/>',
+    "chart": '<path d="M3 3v18h18"/><path d="M7 15l4-5 3 3 5-7"/>',
+    "moon": '<path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/>',
+    "book": '<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V3H6.5A2.5 2.5 0 0 0 4 5.5z"/><path d="M4 19.5V22h16"/>',
+    "shield": '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>',
+    "bolt": '<path d="M13 2 3 14h9l-1 8 10-12h-9z"/>',
+    "cpu": '<rect x="5" y="5" width="14" height="14" rx="2"/><rect x="9" y="9" width="6" height="6"/><path d="M9 1v4M15 1v4M9 19v4M15 19v4M1 9h4M1 15h4M19 9h4M19 15h4"/>',
+    "lock": '<rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/>',
+    "clock": '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+    "calendar": '<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 11h18"/>',
+    "star": '<path d="M12 2l3 6.9 7.5.7-5.7 5 1.7 7.4L12 18l-6.5 4 1.7-7.4-5.7-5 7.5-.7z" fill="currentColor"/>',
+    "users": '<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.9M16 3.1a4 4 0 0 1 0 7.8"/>',
+}
+
+
+def small(name, size=16):
+    return _S.format(s=size, p=SMALL[name])
+
+
+def hero(badge, h1, lead, chips=(), cta="", meta=True, badge_icon="sparkle"):
+    """Centred hero as on the Use Cases page: badge pill, big heading with a gradient, sub-title, row of pills."""
+    chips_html = ""
+    if chips:
+        chips_html = '<ul class="hero-chips">' + "".join(f'<li>{small(i)}{e(t)}</li>' for i, t in chips) + "</ul>"
+    return (f'<header class="hero-c wrap"><span class="badge">{small(badge_icon, 15)}{e(badge)}</span>'
+            f'<h1>{h1}</h1><p class="lead">{lead}</p>{chips_html}{meta_line() if meta else ""}'
+            + (f'<div class="cta">{cta}</div>' if cta else "") + "</header>")
+
+
+def read_minutes(words):
+    return max(1, round(words / 200))
+
+
+def feature_card(url, category, title, excerpt, image, alt, minutes, date_text, author="Samarjit Kashyap", initials="SK"):
+    """The blog's 'Featured insight' card."""
+    return (f'<p class="section-label feat">{small("star", 14)} Featured research</p>'
+            f'<a class="f-card" href="{url}"><div><div class="f-meta"><span class="pill">{e(category)}</span>'
+            f'<span class="i">{small("clock", 14)}{minutes} min read</span><span class="i">{small("calendar", 14)}{e(date_text)}</span></div>'
+            f'<h2 class="f-title" style="padding:0;margin-top:0">{e(title)}</h2><p class="f-excerpt">{e(excerpt)}</p>'
+            f'<div class="f-foot"><span class="who"><span class="avatar" aria-hidden="true">{initials}</span>By {e(author)}</span>'
+            f'<span class="f-read">Read full report &rarr;</span></div></div>'
+            f'<div class="f-img"><img src="{image}" width="960" height="540" alt="{e(alt)}" loading="eager" fetchpriority="high">'
+            f'<span class="chip-on-img l">{e(category)}</span><span class="chip-on-img r">{small("clock", 12)} {minutes} min read</span></div></a>')
+
+
+def story_card(url, category, title, excerpt, image, alt, minutes, date_text, author="Samarjit Kashyap", initials="SK"):
+    """One of the blog's 'Latest stories' cards."""
+    return (f'<a class="s-card" href="{url}"><div class="s-img"><img src="{image}" width="960" height="540" alt="{e(alt)}" loading="lazy">'
+            f'<span class="chip-on-img l">{e(category)}</span></div><div class="s-body"><div class="s-meta"><span>{e(date_text)}</span>'
+            f'<span class="t">{small("clock", 12)} {minutes} min read</span></div><h3 class="s-title">{e(title)}</h3>'
+            f'<p class="s-excerpt">{e(excerpt)}</p></div><div class="s-foot"><span class="who"><span class="avatar" aria-hidden="true">{initials}</span>{e(author)}</span>'
+            f'<span class="r">Read &rarr;</span></div></a>')
 ICONS = {
     "target": '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg>',
     "users": '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.9M16 3.1a4 4 0 0 1 0 7.8"/></svg>',
