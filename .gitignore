@@ -66,3 +66,8 @@ helmet_finetune_*.zip
 # research site build helpers
 research_site.tar
 website/research/_preview/
+
+# Indian/Kaggle downloads and stray model copies (large; regenerated or kept in backend/models/backup)
+data_india/
+/best (1).pt
+/live.onnx

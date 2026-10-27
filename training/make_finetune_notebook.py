@@ -22,7 +22,8 @@ Teaches the helmet model what CCTV footage looks like (small heads, caps and hat
 **You need in Google Drive** (folder `MyDrive/helmet/`):
 1. `helmet_finetune_colab.zip` : CCTV frames with labels + a replay set of the old data (so the model does not forget).
 2. `best.pt` : the model currently on the server (`backend/models/best.pt`).
-3. *(optional)* your own CCTV videos in `MyDrive/helmet/videos/` and/or images in `MyDrive/helmet/images/`.
+3. *(optional)* `helmet_finetune_india.zip` : photos from Indian roads with head labels (the notebook finds it by itself).
+4. *(optional)* your own CCTV videos in `MyDrive/helmet/videos/` and/or images in `MyDrive/helmet/images/`.
 
 Use a **GPU runtime**: Runtime > Change runtime type > T4 GPU. Then run the cells from top to bottom.
 """),
@@ -48,7 +49,12 @@ HAS_NIGHT = NIGHT_ZIP.exists()
 if HAS_NIGHT:
     with zipfile.ZipFile(NIGHT_ZIP) as z:
         z.extractall(DATA)
-for sub in ['cctv/train', 'cctv/val', 'replay'] + (['night/train', 'night/val_night', 'night/val_day'] if HAS_NIGHT else []):
+INDIA_ZIP = DRIVE / 'helmet_finetune_india.zip'      # optional: Indian road images (Kaggle master_traffic_violation), see FINETUNE_STEPS.md
+HAS_INDIA = INDIA_ZIP.exists()
+if HAS_INDIA:
+    with zipfile.ZipFile(INDIA_ZIP) as z:
+        z.extractall(DATA)
+for sub in ['cctv/train', 'cctv/val', 'replay'] + (['night/train', 'night/val_night', 'night/val_day'] if HAS_NIGHT else []) + (['india/train', 'india/val'] if HAS_INDIA else []):
     n = len(list((DATA / sub / 'images').glob('*.jpg')))
     print(sub, n, 'images')
 """),
@@ -103,8 +109,10 @@ IMGSZ, BATCH, EPOCHS = 960, 8, 30      # ~4500 images per epoch: about 5-8 minut
 train = [str(DATA / 'cctv/train/images'), str(DATA / 'replay/images')]
 if USE_MINE: train.append(str(DATA / 'mine/images'))
 if HAS_NIGHT: train.append(str(DATA / 'night/train/images'))
+if HAS_INDIA: train.append(str(DATA / 'india/train/images'))
+val = [str(DATA / 'cctv/val/images')] + ([str(DATA / 'india/val/images')] if HAS_INDIA else [])
 yaml = f\"\"\"train: {train}
-val: {DATA / 'cctv/val/images'}
+val: {val}
 nc: 2
 names: [helmet, no_helmet]
 \"\"\"
@@ -128,6 +136,8 @@ del model
 new = YOLO(str(DRIVE / 'runs/cctv/weights/best.pt'))
 old = YOLO(str(DRIVE / 'best.pt'))
 sets = [('day (held-out CCTV clips)', DATA / 'cctv/val/images')]
+if HAS_INDIA:
+    sets += [('Indian roads (held-out photos)', DATA / 'india/val/images')]
 if HAS_NIGHT:
     sets += [('same frames, daylight', DATA / 'night/val_day/images'), ('same frames made to look like night', DATA / 'night/val_night/images')]
 for label, folder in sets:

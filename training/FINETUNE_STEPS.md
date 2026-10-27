@@ -20,6 +20,21 @@ These images are daytime frames made dark / infrared-like (the dataset has no re
 Before training, the current model scored recall 0.76 on daylight frames but only 0.34 on the same frames made dark.
 Real night video from your own cameras (cell 3) will help much more.
 
+### Indian roads (optional, NOT recommended as built: tested 2026-10-27, did not hold up)
+Result: a model trained with this zip beat the old one on its own source (Kaggle master_traffic_violation, night-like frames) but NOT on
+datasets it never saw (`training/eval_heldout.py`): bare-head catch rate on driver_passenger_7class 73 % -> 57 %, uit_helmet_v8 91 % -> 88 %,
+and false alarms on helmeted riders doubled on helmet_violations_roboflow (9 % -> 18 %) and mp_final (4 % -> 12 %). The old model was put back.
+Likely cause: the head boxes were made by our own detector, so its mistakes were baked into the labels. Do not use this zip again unless
+the head labels are checked by hand or come from real head-box datasets. Original instructions:
+
+Also upload `helmet_finetune_india.zip` to the same Drive folder. The notebook finds it by itself, trains on it too, and cell 5 then
+prints the old and the new model on held-out Indian photos next to the CCTV frames.
+These are photos from Indian roads (Kaggle `master_traffic_violation`, Roboflow export: check its licence on the Kaggle page before sharing).
+The dataset labels whole riders; the head boxes in the zip were made by our own detector inside each rider box and carry the rider's label,
+so the model is taught on the cases it got wrong. Riders where no head was found were skipped. Before training, on held-out
+Indian photos the current model caught about 59 % of bare-headed riders at confidence 0.40 (about 65 % at 0.25).
+The photos are small (640 px), so heads are tiny: real Indian CCTV frames from your own cameras will still help more.
+
 ## 2. Colab
 1. Open `finetune_cctv_colab.ipynb` in Google Colab (File > Upload notebook).
 2. Runtime > Change runtime type > **T4 GPU**.
