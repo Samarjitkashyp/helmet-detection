@@ -1,11 +1,11 @@
 <tr id="user-{{ u.id }}">
-  <td>{{ u.id }}</td>
-  <td>{{ u.name }}</td>
-  <td>{{ u.email }}</td>
-  <td><span class="badge text-bg-{{ 'primary' if u.role == 'admin' else 'secondary' }}">{{ u.role }}</span></td>
-  <td>{{ counts.get(u.id, 0) }}</td>
-  <td><span class="badge text-bg-{{ 'success' if u.is_active else 'danger' }}">{{ 'active' if u.is_active else 'blocked' }}</span></td>
-  <td class="text-end">
+  <td data-label="ID">{{ u.id }}</td>
+  <td data-label="Name">{{ u.name }}</td>
+  <td data-label="Email" class="text-break">{{ u.email }}</td>
+  <td data-label="Role"><span class="badge text-bg-{{ 'primary' if u.role == 'admin' else 'secondary' }}">{{ u.role }}</span></td>
+  <td data-label="Videos">{{ counts.get(u.id, 0) }}</td>
+  <td data-label="Status"><span class="badge text-bg-{{ 'success' if u.is_active else 'danger' }}">{{ 'active' if u.is_active else 'blocked' }}</span></td>
+  <td class="text-end cell-actions">
     {% if u.id != admin.id %}
     <button class="btn btn-sm btn-outline-secondary" hx-post="/panel/users/{{ u.id }}/toggle-role"
             hx-target="#user-{{ u.id }}" hx-swap="outerHTML"

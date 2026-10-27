@@ -5,32 +5,33 @@
 <div class="card shadow-sm mb-4"><div class="card-body">
   <h6 class="mb-3">Add a camera</h6>
   <form class="row g-2" method="post" action="/panel/cameras">
-    <div class="col-md-3"><input name="name" class="form-control form-control-sm" placeholder="Name, e.g. Main gate" maxlength="100" required></div>
-    <div class="col-md-6"><input name="rtsp_url" class="form-control form-control-sm" placeholder="rtsp://user:password@192.168.1.10:554/stream1" required></div>
-    <div class="col-auto"><button class="btn btn-sm btn-primary">Add</button></div>
+    <div class="col-12 col-md-3"><input name="name" class="form-control form-control-sm" placeholder="Name, e.g. Main gate" maxlength="100" required></div>
+    <div class="col-12 col-md-6"><input name="rtsp_url" class="form-control form-control-sm" placeholder="rtsp://user:password@192.168.1.10:554/stream1" required></div>
+    <div class="col-12 col-md-auto"><button class="btn btn-sm btn-primary w-100">Add</button></div>
   </form>
   <div class="text-secondary small mt-2">The password in the address is stored on the server and never shown again.</div>
 </div></div>
 <div class="card shadow-sm"><div class="table-responsive">
-<table class="table align-middle mb-0">
+<table class="table table-stack align-middle mb-0">
   <thead><tr><th>ID</th><th>Name</th><th>Address</th><th>Events</th><th>Status</th><th></th></tr></thead>
   <tbody>
   {% for c in items %}
     <tr class="{{ 'fp' if not c.is_active }}">
-      <td>#{{ c.id }}</td><td>{{ c.name }}</td>
-      <td><code class="small">{{ c.rtsp_url | mask_url }}</code></td>
-      <td><a href="/panel/events?camera_id={{ c.id }}">{{ counts.get(c.id, 0) }}</a></td>
-      <td><span class="badge text-bg-{{ 'success' if c.is_active else 'secondary' }}">{{ 'active' if c.is_active else 'paused' }}</span></td>
-      <td class="text-end">
+      <td data-label="ID">#{{ c.id }}</td><td data-label="Name">{{ c.name }}</td>
+      <td data-label="Address"><code class="small">{{ c.rtsp_url | mask_url }}</code></td>
+      <td data-label="Events"><a href="/panel/events?camera_id={{ c.id }}">{{ counts.get(c.id, 0) }}</a></td>
+      <td data-label="Status"><span class="badge text-bg-{{ 'success' if c.is_active else 'secondary' }}">{{ 'active' if c.is_active else 'paused' }}</span></td>
+      <td class="text-end cell-actions">
         <form method="post" action="/panel/cameras/{{ c.id }}/toggle" class="d-inline"><button class="btn btn-sm btn-outline-secondary">{{ 'Pause' if c.is_active else 'Resume' }}</button></form>
         <form method="post" action="/panel/cameras/{{ c.id }}/delete" class="d-inline" onsubmit="return confirm('Remove this camera? Its events are kept.')"><button class="btn btn-sm btn-outline-danger">Remove</button></form>
       </td>
     </tr>
   {% else %}
-    <tr><td colspan="6" class="text-center text-secondary py-4">No cameras yet.</td></tr>
+    <tr><td colspan="6" class="text-center text-secondary py-4 cell-full">No cameras yet.</td></tr>
   {% endfor %}
   </tbody>
 </table></div></div>
+{% include "_pager.html" %}
 <div class="text-secondary small mt-3">Start monitoring a camera on the server with
   <code>python -m services.cctv_worker --camera-id &lt;ID&gt;</code>. Paused cameras are not monitored when the worker starts.</div>
 {% endblock %}

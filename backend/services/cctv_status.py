@@ -6,7 +6,7 @@ from datetime import datetime
 import config
 from db.database import SessionLocal
 from db.models import Setting
-from services import telegram
+from services import push, telegram
 
 LAST_HEARTBEAT = "cctv_last_heartbeat"     # ISO time (UTC) of the newest heartbeat
 OFFLINE_NOTIFIED = "cctv_offline_notified"  # "1" while an "offline" alert is out
@@ -51,6 +51,7 @@ def record_heartbeat(stream_ok: bool, camera_name: str) -> None:
         db.commit()
     for m in messages:
         telegram.send_message(m)
+        push.notify_text("CCTV", m)
 
 
 def check_once() -> None:
@@ -74,6 +75,7 @@ def check_once() -> None:
         db.commit()
     for m in messages:
         telegram.send_message(m)
+        push.notify_text("CCTV", m)
 
 
 def _loop():

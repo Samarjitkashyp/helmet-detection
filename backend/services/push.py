@@ -71,6 +71,13 @@ def _notify(title: str, body: str, data: dict) -> None:
         print("push failed:", type(e).__name__, flush=True)
 
 
+def notify_text(title: str, body: str) -> None:
+    """Fire and forget: a plain status message (worker offline / back online) to every admin phone."""
+    if not configured():
+        return
+    threading.Thread(target=_notify, args=(title, body, {"type": "cctv_status"}), daemon=True).start()
+
+
 def notify_event(event_id: int, camera_name: str, people: int) -> None:
     """Fire and forget: tell every admin phone about a new CCTV event."""
     if not configured():

@@ -4,21 +4,21 @@
   <h3 class="mb-0">CCTV events <small class="text-secondary fs-6">({{ total }})</small></h3>
 </div>
 <form class="row g-2 mb-3" method="get">
-  <div class="col-auto"><select name="camera_id" class="form-select form-select-sm">
+  <div class="col-6 col-sm-auto"><select name="camera_id" class="form-select form-select-sm">
     <option value="">all cameras</option>
     {% for c in cams %}<option value="{{ c.id }}" {{ 'selected' if camera_id == c.id }}>{{ c.name }}</option>{% endfor %}
   </select></div>
-  <div class="col-auto"><select name="fp" class="form-select form-select-sm">
+  <div class="col-6 col-sm-auto"><select name="fp" class="form-select form-select-sm">
     {% for v, t in [('no','valid only'),('yes','false positives'),('','all')] %}<option value="{{ v }}" {{ 'selected' if fp == v }}>{{ t }}</option>{% endfor %}
   </select></div>
-  <div class="col-auto"><button class="btn btn-sm btn-primary">Filter</button></div>
+  <div class="col-12 col-sm-auto"><button class="btn btn-sm btn-primary w-100">Filter</button></div>
 </form>
 <div class="card shadow-sm"><div class="table-responsive">
-<table class="table table-hover align-middle mb-0">
+<table class="table table-hover table-stack align-middle mb-0">
   <thead><tr><th>Photo</th><th>ID</th><th>Camera</th><th>Time</th><th>Conf.</th><th>Telegram</th><th></th></tr></thead>
   <tbody>
     {% for e in items %}{% include "_event_row.html" %}{% else %}
-    <tr><td colspan="7" class="text-center text-secondary py-4">No events yet.</td></tr>{% endfor %}
+    <tr><td colspan="7" class="text-center text-secondary py-4 cell-full">No events yet.</td></tr>{% endfor %}
   </tbody>
 </table></div></div>
 {% set qs = '&fp=' ~ fp ~ ('&camera_id=' ~ camera_id if camera_id else '') %}

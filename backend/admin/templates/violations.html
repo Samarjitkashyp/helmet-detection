@@ -1,34 +1,34 @@
 {% extends "base.html" %}
 {% block content %}
-<div class="d-flex justify-content-between align-items-center mb-3">
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
   <h3 class="mb-0">Violations <small class="text-secondary fs-6">({{ total }})</small></h3>
-  <div class="btn-group btn-group-sm">
-    <a class="btn btn-outline-primary" href="/panel/export.csv"><i class="bi bi-download"></i> CSV</a>
-    <a class="btn btn-outline-primary" href="/panel/export-training.zip?include=fp"
+  <div class="d-flex flex-wrap gap-1">
+    <a class="btn btn-sm btn-outline-primary" href="/panel/export.csv"><i class="bi bi-download"></i> CSV</a>
+    <a class="btn btn-sm btn-outline-primary" href="/panel/export-training.zip?include=fp"
        title="Frames you flagged as false positive, with proposed corrected labels, for retraining"><i class="bi bi-box-arrow-down"></i> Retrain set (false positives)</a>
-    <a class="btn btn-outline-secondary" href="/panel/export-training.zip?include=all"
+    <a class="btn btn-sm btn-outline-secondary" href="/panel/export-training.zip?include=all"
        title="All detections as unreviewed labels"><i class="bi bi-boxes"></i> All frames</a>
   </div>
 </div>
 <form class="row g-2 mb-3" method="get">
-  <div class="col-auto"><select name="label" class="form-select form-select-sm">
+  <div class="col-6 col-sm-auto"><select name="label" class="form-select form-select-sm">
     {% for v, t in [('no_helmet','no_helmet'),('helmet','helmet'),('','all labels')] %}<option value="{{ v }}" {{ 'selected' if label == v }}>{{ t }}</option>{% endfor %}
   </select></div>
-  <div class="col-auto"><select name="fp" class="form-select form-select-sm">
+  <div class="col-6 col-sm-auto"><select name="fp" class="form-select form-select-sm">
     {% for v, t in [('no','valid only'),('yes','false positives'),('','all')] %}<option value="{{ v }}" {{ 'selected' if fp == v }}>{{ t }}</option>{% endfor %}
   </select></div>
-  <div class="col-auto"><select name="user_id" class="form-select form-select-sm">
+  <div class="col-6 col-sm-auto"><select name="user_id" class="form-select form-select-sm">
     <option value="">all users</option>
     {% for u in users %}<option value="{{ u.id }}" {{ 'selected' if user_id == u.id }}>{{ u.name }}</option>{% endfor %}
   </select></div>
-  <div class="col-auto"><button class="btn btn-sm btn-primary">Filter</button></div>
+  <div class="col-12 col-sm-auto"><button class="btn btn-sm btn-primary w-100">Filter</button></div>
 </form>
 <div class="card shadow-sm"><div class="table-responsive">
-<table class="table table-hover align-middle mb-0">
+<table class="table table-hover table-stack align-middle mb-0">
   <thead><tr><th>Frame</th><th>ID</th><th>Label</th><th>Conf.</th><th>Video / user</th><th></th></tr></thead>
   <tbody>
     {% for d in items %}{% include "_violation_row.html" %}{% else %}
-    <tr><td colspan="6" class="text-center text-secondary py-4">Nothing found.</td></tr>{% endfor %}
+    <tr><td colspan="6" class="text-center text-secondary py-4 cell-full">Nothing found.</td></tr>{% endfor %}
   </tbody>
 </table></div></div>
 {% set qs = '&label=' ~ label ~ '&fp=' ~ fp ~ ('&user_id=' ~ user_id if user_id else '') %}

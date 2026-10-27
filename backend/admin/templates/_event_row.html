@@ -1,11 +1,11 @@
 <tr id="ev-{{ e.id }}" class="{{ 'fp' if e.is_false_positive }}">
-  <td>{% if e.photo %}<a href="/panel/cctv-media/{{ e.photo }}" target="_blank"><img class="thumb" src="/panel/cctv-media/{{ e.photo }}" alt=""></a>{% else %}<div class="thumb"></div>{% endif %}</td>
-  <td>#{{ e.id }}</td>
-  <td>{{ e.camera_name }}{% if not e.camera_id %} <small class="text-secondary">(removed)</small>{% endif %}</td>
-  <td>{{ e.created_at.strftime('%d %b %Y %H:%M:%S') }}</td>
-  <td>{{ '%.0f' % (e.confidence * 100) }}%</td>
-  <td><span class="badge text-bg-{{ 'success' if e.telegram_sent else 'secondary' }}">{{ 'sent' if e.telegram_sent else 'not sent' }}</span></td>
-  <td class="text-end">
+  <td class="cell-photo">{% if e.photo %}<a href="/panel/cctv-media/{{ e.photo }}" target="_blank"><img class="thumb" src="/panel/cctv-media/{{ e.photo }}" alt=""></a>{% else %}<div class="thumb"></div>{% endif %}</td>
+  <td data-label="ID">#{{ e.id }}</td>
+  <td data-label="Camera">{{ e.camera_name }}{% if not e.camera_id %} <small class="text-secondary">(removed)</small>{% endif %}</td>
+  <td data-label="Time">{{ e.created_at.strftime('%d %b %Y %H:%M:%S') }}</td>
+  <td data-label="Conf.">{{ '%.0f' % (e.confidence * 100) }}%</td>
+  <td data-label="Telegram"><span class="badge text-bg-{{ 'success' if e.telegram_sent else 'secondary' }}">{{ 'sent' if e.telegram_sent else 'not sent' }}</span></td>
+  <td class="text-end cell-actions">
     <button class="btn btn-sm {{ 'btn-outline-secondary' if e.is_false_positive else 'btn-outline-danger' }}"
             hx-post="/panel/events/{{ e.id }}/toggle-fp" hx-target="#ev-{{ e.id }}" hx-swap="outerHTML">
       {{ 'Undo false positive' if e.is_false_positive else 'Mark false positive' }}

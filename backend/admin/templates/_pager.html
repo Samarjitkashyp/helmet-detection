@@ -1,7 +1,25 @@
-{% if pages > 1 %}
-<nav class="mt-3"><ul class="pagination pagination-sm mb-0">
-  <li class="page-item {{ 'disabled' if page <= 1 }}"><a class="page-link" href="?page={{ page - 1 }}{{ qs }}">Prev</a></li>
-  <li class="page-item disabled"><span class="page-link">{{ page }} / {{ pages }}</span></li>
-  <li class="page-item {{ 'disabled' if page >= pages }}"><a class="page-link" href="?page={{ page + 1 }}{{ qs }}">Next</a></li>
-</ul></nav>
+{# needs: page, pages, per, total; optional qs (the active filters as "&name=value..."). #}
+{% if total > 10 %}
+{% set first = (page - 1) * per + 1 %}
+{% set last = [page * per, total] | min %}
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mt-3">
+  <div class="text-secondary small">Showing {{ first }}&ndash;{{ last }} of {{ total }}</div>
+  <div class="d-flex flex-wrap align-items-center gap-2">
+    <nav aria-label="Pages"><ul class="pagination pagination-sm mb-0">
+      <li class="page-item {{ 'disabled' if page <= 1 }}"><a class="page-link" href="?page={{ page - 1 }}&per={{ per }}{{ qs }}" aria-label="Previous">&laquo;<span class="d-none d-sm-inline"> Prev</span></a></li>
+      {% set ns = namespace(prev=0) %}
+      {% for n in range(1, pages + 1) if n == 1 or n == pages or (n - page) | abs <= 1 %}
+        {% if n - ns.prev > 1 %}<li class="page-item disabled d-none d-md-block"><span class="page-link">&hellip;</span></li>{% endif %}
+        <li class="page-item {{ 'active' if n == page else 'd-none d-md-block' }}"><a class="page-link" href="?page={{ n }}&per={{ per }}{{ qs }}">{{ n }}</a></li>
+        {% set ns.prev = n %}
+      {% endfor %}
+      <li class="page-item d-md-none disabled"><span class="page-link">of {{ pages }}</span></li>
+      <li class="page-item {{ 'disabled' if page >= pages }}"><a class="page-link" href="?page={{ page + 1 }}&per={{ per }}{{ qs }}" aria-label="Next"><span class="d-none d-sm-inline">Next </span>&raquo;</a></li>
+    </ul></nav>
+    <select class="form-select form-select-sm w-auto" aria-label="Rows per page"
+            onchange='location.search = "?page=1&per=" + this.value + {{ (qs or "") | tojson }}'>
+      {% for n in [10, 25, 50, 100] %}<option value="{{ n }}" {{ 'selected' if n == per }}>{{ n }} / page</option>{% endfor %}
+    </select>
+  </div>
+</div>
 {% endif %}

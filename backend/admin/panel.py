@@ -27,6 +27,15 @@ from services.video_processor import raw_path
 
 SESSION_KEY = "admin_id"
 PAGE_SIZE = 25
+PER_PAGE_CHOICES = (10, 25, 50, 100)
+
+
+def paging(page: int, per: int, total: int) -> dict:
+    """Page numbers for a list: a bad ?page= or ?per= falls back to something valid instead of failing."""
+    per = per if per in PER_PAGE_CHOICES else PAGE_SIZE
+    pages = max(1, -(-total // per))
+    page = min(max(page, 1), pages)
+    return {"page": page, "per": per, "pages": pages, "total": total, "start": (page - 1) * per}
 
 templates = Jinja2Templates(directory=str(Path(__file__).parent / "templates"))
 templates.env.globals["published_app"] = app_release.info   # lets every page show the "Download app" button
@@ -123,13 +132,14 @@ def _violation_query(label: str, fp: str, user_id: int | None):
 
 @router.get("/violations", response_class=HTMLResponse)
 def violations(request: Request, label: str = "no_helmet", fp: str = "no", user_id: int | None = None,
-               page: int = 1, admin: User = Depends(current_admin), db: Session = Depends(get_db)):
+               page: int = 1, per: int = PAGE_SIZE, admin: User = Depends(current_admin), db: Session = Depends(get_db)):
     q = _violation_query(label, fp, user_id)
     total = db.scalar(select(func.count()).select_from(q.order_by(None).subquery()))
-    items = db.scalars(q.order_by(Detection.id.desc()).offset((page - 1) * PAGE_SIZE).limit(PAGE_SIZE)).unique().all()
+    p = paging(page, per, total)
+    items = db.scalars(q.order_by(Detection.id.desc()).offset(p["start"]).limit(p["per"])).unique().all()
     users = db.scalars(select(User).order_by(User.name)).all()
-    return render(request, "violations.html", admin, active="violations", items=items, total=total, page=page,
-                  pages=max(1, -(-total // PAGE_SIZE)), label=label, fp=fp, user_id=user_id, users=users)
+    return render(request, "violations.html", admin, active="violations", items=items, label=label, fp=fp,
+                  user_id=user_id, users=users, **p)
 
 
 @router.post("/violations/{det_id}/toggle-fp", response_class=HTMLResponse)
@@ -152,11 +162,13 @@ templates.env.filters["mask_url"] = mask_url
 
 
 @router.get("/cameras", response_class=HTMLResponse)
-def cameras(request: Request, error: str = "", admin: User = Depends(current_admin), db: Session = Depends(get_db)):
-    items = db.scalars(select(Camera).order_by(Camera.id)).all()
+def cameras(request: Request, error: str = "", page: int = 1, per: int = PAGE_SIZE,
+            admin: User = Depends(current_admin), db: Session = Depends(get_db)):
+    p = paging(page, per, db.scalar(select(func.count(Camera.id))))
+    items = db.scalars(select(Camera).order_by(Camera.id).offset(p["start"]).limit(p["per"])).all()
     counts = dict(db.execute(select(CctvEvent.camera_id, func.count(CctvEvent.id))
                              .where(CctvEvent.is_false_positive.is_(False)).group_by(CctvEvent.camera_id)).all())
-    return render(request, "cameras.html", admin, active="cameras", items=items, counts=counts, error=error)
+    return render(request, "cameras.html", admin, active="cameras", items=items, counts=counts, error=error, **p)
 
 
 @router.post("/cameras")
@@ -190,7 +202,7 @@ def camera_delete(cam_id: int, admin: User = Depends(current_admin), db: Session
 
 
 @router.get("/events", response_class=HTMLResponse)
-def events(request: Request, camera_id: int | None = None, fp: str = "no", page: int = 1,
+def events(request: Request, camera_id: int | None = None, fp: str = "no", page: int = 1, per: int = PAGE_SIZE,
            admin: User = Depends(current_admin), db: Session = Depends(get_db)):
     q = select(CctvEvent)
     if camera_id:
@@ -200,10 +212,11 @@ def events(request: Request, camera_id: int | None = None, fp: str = "no", page:
     elif fp == "no":
         q = q.where(CctvEvent.is_false_positive.is_(False))
     total = db.scalar(select(func.count()).select_from(q.order_by(None).subquery()))
-    items = db.scalars(q.order_by(CctvEvent.id.desc()).offset((page - 1) * PAGE_SIZE).limit(PAGE_SIZE)).all()
+    p = paging(page, per, total)
+    items = db.scalars(q.order_by(CctvEvent.id.desc()).offset(p["start"]).limit(p["per"])).all()
     cams = db.scalars(select(Camera).order_by(Camera.name)).all()
-    return render(request, "events.html", admin, active="events", items=items, total=total, page=page,
-                  pages=max(1, -(-total // PAGE_SIZE)), camera_id=camera_id, fp=fp, cams=cams)
+    return render(request, "events.html", admin, active="events", items=items, camera_id=camera_id, fp=fp,
+                  cams=cams, **p)
 
 
 @router.post("/events/{event_id}/toggle-fp", response_class=HTMLResponse)
@@ -228,10 +241,12 @@ def cctv_media(name: str, admin: User = Depends(current_admin)):
 
 # ---------- users ----------
 @router.get("/users", response_class=HTMLResponse)
-def users(request: Request, admin: User = Depends(current_admin), db: Session = Depends(get_db)):
+def users(request: Request, page: int = 1, per: int = PAGE_SIZE, admin: User = Depends(current_admin),
+          db: Session = Depends(get_db)):
     counts = dict(db.execute(select(Video.user_id, func.count(Video.id)).group_by(Video.user_id)).all())
-    items = db.scalars(select(User).order_by(User.id)).all()
-    return render(request, "users.html", admin, active="users", items=items, counts=counts)
+    p = paging(page, per, db.scalar(select(func.count(User.id))))
+    items = db.scalars(select(User).order_by(User.id).offset(p["start"]).limit(p["per"])).all()
+    return render(request, "users.html", admin, active="users", items=items, counts=counts, **p)
 
 
 def _user_row(request, admin, db, user_id):
@@ -268,19 +283,20 @@ def toggle_role(user_id: int, request: Request, admin: User = Depends(current_ad
 
 # ---------- videos ----------
 @router.get("/videos", response_class=HTMLResponse)
-def videos(request: Request, status: str = "", page: int = 1, admin: User = Depends(current_admin),
-           db: Session = Depends(get_db)):
+def videos(request: Request, status: str = "", page: int = 1, per: int = PAGE_SIZE,
+           admin: User = Depends(current_admin), db: Session = Depends(get_db)):
     q = select(Video).options(joinedload(Video.user))
     if status in ("processing", "done", "failed"):
         q = q.where(Video.status == status)
     total = db.scalar(select(func.count()).select_from(q.order_by(None).subquery()))
-    items = db.scalars(q.order_by(Video.id.desc()).offset((page - 1) * PAGE_SIZE).limit(PAGE_SIZE)).all()
+    p = paging(page, per, total)
+    items = db.scalars(q.order_by(Video.id.desc()).offset(p["start"]).limit(p["per"])).all()
     det_counts = dict(db.execute(
         select(Detection.video_id, func.count(Detection.id))
         .where(Detection.label == "no_helmet", Detection.is_false_positive.is_(False))
         .group_by(Detection.video_id)).all())
-    return render(request, "videos.html", admin, active="videos", items=items, total=total, page=page,
-                  pages=max(1, -(-total // PAGE_SIZE)), status=status, det_counts=det_counts)
+    return render(request, "videos.html", admin, active="videos", items=items, status=status,
+                  det_counts=det_counts, **p)
 
 
 # ---------- settings ----------
